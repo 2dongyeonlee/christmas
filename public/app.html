@@ -712,7 +712,7 @@ function sparkle(){
 let spkT=null;addEventListener("resize",()=>{clearTimeout(spkT);spkT=setTimeout(()=>{try{sparkle();}catch(e){}},300);});
 function buildHouse(){
  SMK=[];let s='<defs><filter id="wob" x="-5%" y="-5%" width="110%" height="110%">'+FILTERS[mode]+'</filter>'+
- '<filter id="soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter><radialGradient id="moonG"><stop offset=".45" stop-color="#FFF3C4" stop-opacity=".75"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient><filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="a"/><feColorMatrix in="a" values="0 0 0 0 .42  0 0 0 0 .36  0 0 0 0 .3  0 0 0 .5 -.05" result="g"/><feTurbulence type="fractalNoise" baseFrequency=".007" numOctaves="2" seed="21" result="b"/><feColorMatrix in="b" values="0 0 0 0 .25  0 0 0 0 .22  0 0 0 0 .3  0 0 0 .55 -.18" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="g"/></feMerge></filter>'+
+ '<filter id="soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient><filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="a"/><feColorMatrix in="a" values="0 0 0 0 .42  0 0 0 0 .36  0 0 0 0 .3  0 0 0 .5 -.05" result="g"/><feTurbulence type="fractalNoise" baseFrequency=".007" numOctaves="2" seed="21" result="b"/><feColorMatrix in="b" values="0 0 0 0 .25  0 0 0 0 .22  0 0 0 0 .3  0 0 0 .55 -.18" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="g"/></feMerge></filter>'+
  '</defs>';
  
  
@@ -732,8 +732,8 @@ function buildHouse(){
  for(let i=0;i<40;i++){s+='<circle class="st" cx="'+((i*173)%600)+'" cy="'+((i*97)%170+8)+'" r="'+(i%4?1.6:2.6)+'" fill="#FFFFFF" style="animation-duration:'+(2.2+(i*0.37)%2.6).toFixed(2)+'s;animation-delay:-'+((i*0.53)%3).toFixed(2)+'s"/>';}
  const spk=(x,y,r,d)=>'<path class="spk4" d="M'+x+' '+(y-r)+' Q'+x+' '+y+' '+(x+r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y+r)+' Q'+x+' '+y+' '+(x-r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y-r)+' Z" fill="#FFF6D6" style="animation-delay:-'+d+'s"/>';
  [[86,40,9,0],[196,112,7,1.1],[402,34,10,.5],[520,96,8,1.7],[252,150,6,2.2],[566,30,6,.9],[140,150,5,1.4],[470,160,6,2.6]].forEach(a=>{s+=spk(...a);});
- s+='<circle class="moonhalo" cx="300" cy="70" r="46" fill="url(#moonG)"/>';
- s+='<g class="moon"><circle cx="300" cy="70" r="24" fill="#FFF3C4" '+K+'/><circle cx="311" cy="63" r="22" fill="#5F72C4"/></g>';
+ s+='<circle class="moonhalo" cx="296" cy="72" r="40" fill="url(#moonG)"/>';
+ s+='<path class="moon" d="M296.77 46.22 A24 24 0 1 0 320.18 82.99 A22 22 0 0 1 296.77 46.22 Z" fill="#FFF3C4" '+K+'/>';
  s+=spk(330,44,6,.3);
  s+='</g>'+ferris(96,236,74)+'<g filter="url(#wob)">';
  s+=farRow();
