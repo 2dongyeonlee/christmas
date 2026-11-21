@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{--bg:#F6F1E4;--ink:#222;--red:#D24A3E;--green:#4F7A4A;--beige:#EFD9A8;--sky:#CFE0EA;--muted:#6A6257;--paper:#FFFCF4;color-scheme:light}
 *{box-sizing:border-box}
@@ -25,7 +26,7 @@ html,body{margin:0}
 body{letter-spacing:-1px;background:var(--bg);color:var(--ink);font-family:"Gamja Flower",sans-serif;font-size:15px;line-height:1.55;min-height:100vh;overflow-x:hidden}
 button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
 h1,h2,b,strong,.btn,.lab,.tabs button,.opt,.ready span,.reveals li,.pill,.giftbtn,.title .eyebrow,.result .who{font-weight:400!important}
-:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 body.crayon{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4  0 0 0 0 .33  0 0 0 0 .22  0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E")}
 .styleSw{display:flex;justify-content:flex-end;gap:4px;margin:-8px 0 6px}
 .styleSw button{min-height:34px;padding:0 12px;border:2px solid #D9D0BC;background:var(--paper);border-radius:999px;font-size:14px;cursor:pointer;color:var(--muted)}
@@ -232,15 +233,78 @@ textarea.letter{font-family:"Gamja Flower",sans-serif;font-size:21px;line-height
 .gcard .btn{font-size:22px;min-height:54px;padding:0 26px}
 .gquiet{display:block;margin:14px auto 0;border:0;background:none;color:var(--muted);font-size:16px;text-decoration:underline;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.gfigs span{animation:none}.gate{transition:none}}
+
+/* ===== modern UI layer (v22) ===== */
+:root{--bg:#F7F6F2;--ink:#171717;--muted:#77756E;--line:#E5E2DA;--red:#C9382E;--green:#2F5D46;--paper:#FFFFFF;--soft:#F1EFE9}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;letter-spacing:-.02em;font-size:15px;background:var(--bg)}
+body .title .eyebrow,body .gcard .eyebrow{font-family:inherit;font-size:12px;font-weight:600!important;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+body .title h1,body .gcard h2{font-family:inherit;font-weight:800!important;letter-spacing:-.045em;color:var(--ink)}
+.title h1{font-size:clamp(30px,8vw,44px);margin-top:8px}
+.title p.sub,.gcard .gsub{font-family:"Gamja Flower",sans-serif;letter-spacing:-1px;color:var(--green)}
+.title p.sub{font-size:clamp(22px,6vw,28px);margin-top:4px}
+.divider{display:none}
+#house{border-radius:20px;overflow:hidden}
+.help{font-size:14px;color:var(--muted);line-height:1.6}
+body .pill{font-family:inherit;font-weight:600!important;font-size:13px;padding:6px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+body .pill.dday{background:var(--red)!important;border-color:var(--red)!important;color:#fff}
+body .btn{font-family:inherit;font-weight:600!important;font-size:16px;min-height:50px;padding:0 22px;border:0;border-radius:999px;background:var(--ink);color:#fff;box-shadow:none;transition:transform .12s,opacity .2s}
+body .btn:active{transform:scale(.97);box-shadow:none}
+body .btn.red{background:var(--red)}
+body .btn.ink{background:var(--green)}
+body .btn.quiet{background:transparent;color:var(--muted);border:1px solid var(--line)}
+body .giftbtn{font-family:inherit;font-weight:600!important;font-size:15px;color:var(--ink)}
+.giftbtn svg{width:96px;height:88px}
+.note{border:1px solid #F0C9C4;background:#FFF7F6;border-radius:12px;font-size:13px}
+.sheet{background:rgba(20,20,20,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#winSheet{background:rgba(20,20,20,.22)}
+.panel{background:var(--paper);border:0;border-radius:24px 24px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.12);padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+@media (min-width:640px){.panel{border:0;border-radius:24px;box-shadow:0 24px 64px rgba(0,0,0,.18)}}
+body .panel h2{font-family:inherit;font-weight:700!important;font-size:22px;letter-spacing:-.03em;color:var(--ink)}
+.panel .lead{font-size:14px;color:var(--muted);margin-top:6px}
+body .lab{font-family:inherit;font-weight:600!important;font-size:13px;color:var(--muted);margin:18px 0 8px}
+body .opt{font-family:inherit;font-weight:600!important;font-size:13px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
+.opt[aria-pressed="true"]{border:1.5px solid var(--ink);box-shadow:none;background:var(--soft)}
+body .opt small{font-family:inherit;font-size:11px}
+input[type=password],input[type=text],select{border:1px solid var(--line);background:#FAFAF8;border-radius:12px;padding:12px 14px;font-size:16px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink)}
+.chip{border:1px solid var(--line);background:var(--paper);font-size:13px;font-weight:500;min-height:34px}
+.chip:hover{border-color:var(--ink)}
+.count,.hint,.msg{font-size:13px}
+.tabs{gap:0;margin-top:16px;border:0;background:var(--soft);border-radius:14px;padding:4px}
+body .tabs button{flex:1;font-family:inherit;font-weight:600!important;font-size:14px;min-height:40px;border:0;border-radius:10px;margin:0;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.hero .env{font-size:14px;color:var(--muted)}
+body .hero .env b{font-family:inherit;font-weight:800!important;font-size:30px;color:var(--ink);letter-spacing:-.04em}
+.paperopt{border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.paperopt[aria-pressed="true"]{box-shadow:0 0 0 2px var(--paper),0 0 0 3.5px var(--ink)}
+.stk{border:1px solid var(--line);border-radius:14px}
+.stk[aria-pressed="true"]{border:1.5px solid var(--ink);box-shadow:none;background:var(--soft)}
+body .ready span{font-family:inherit;font-weight:600!important;font-size:13px;border:1px solid var(--line)}
+.ready span.on{background:var(--green);border-color:var(--green)}
+body .reveals li{font-family:inherit;font-weight:600!important;font-size:14px;border:1px solid var(--line);background:var(--paper)}
+.stage{border:1px solid var(--line);background:#FAFAF7;border-radius:18px}
+body .result .who{font-family:inherit;font-weight:800!important;font-size:40px;letter-spacing:-.04em}
+.musicbtn{border:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:inherit;font-weight:600;font-size:14px}
+.fcard{border:0;border-radius:24px;box-shadow:0 24px 64px rgba(0,0,0,.2)}
+body .fcard h2{font-family:inherit;font-weight:800!important;font-size:30px;letter-spacing:-.04em}
+.feyebrow{font-size:12px;letter-spacing:.08em}
+.gate{background:var(--bg)}
+.gcard h2{font-size:clamp(32px,9vw,46px);margin-top:10px}
+.gcard .gsub{font-size:clamp(22px,6vw,28px);margin:4px 0 28px}
+.gcard .btn{font-size:16px;min-height:54px;padding:0 30px}
+.gquiet{text-decoration:none;font-size:14px;margin-top:16px}
+.gquiet:hover{color:var(--ink)}
+.gfigs{gap:6px;margin-bottom:18px}
+@media (min-width:1024px) and (orientation:landscape){body .title h1{font-size:46px}}
 </style>
 </head>
 <body>
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gTitle"><div class="gcard">
 <div class="gfigs" id="gFigs" aria-hidden="true"></div>
-<p class="eyebrow">Merry Christmas · ’90–’95</p>
+<p class="eyebrow">2026.12.03 · ’90–’95</p>
 <h2 id="gTitle">정자동의 크리스마스</h2>
 <p class="gsub">2026, 잘 버텼다</p>
-<button class="btn red" type="button" id="gEnter">재즈 들으며 들어가기</button>
+<button class="btn" type="button" id="gEnter">재즈 들으며 들어가기</button>
 <button class="gquiet" type="button" id="gQuiet">소리 없이 들어가기</button>
 </div></div>
 <canvas id="snow" aria-hidden="true"></canvas>
@@ -1111,16 +1175,6 @@ const Jazz=(()=>{
  let ctx=null,master=null,timer=null,playing=false,nextT=0,beat=0,pi=0,rep=0;
  const mf=m=>440*Math.pow(2,(m-69)/12);
  const sw=b=>{const f=b-Math.floor(b);return Math.abs(f-.5)<1e-6?b+1/6:b;};
- // Song A: "눈 오는 정자동" — original slow-swing ballad (F major), written for this page
- const SNOW={bpm:96,brush:true,
-  mel:[[[0,1.5,69],[1.5,.5,72],[2,2,76]],[[0,1,77],[1,1,76],[2,2,74]],[[0,1.5,70],[1.5,.5,74],[2,2,77]],[[0,3,76],[3,1,72]],
-   [[0,1,72],[1,1,76],[2,1,78],[3,1,81]],[[0,2,79],[2,1,77],[3,1,76]],[[0,1.5,76],[1.5,.5,77],[2,2,72]],[[0,1,70],[1,1,72],[2,1,75],[3,1,74]],
-   [[0,1.5,74],[1.5,.5,77],[2,2,81]],[[0,2,80],[2,1,79],[3,1,77]],[[0,1.5,76],[1.5,.5,79],[2,2,72]],[[0,3,78],[3,1,74]],
-   [[0,1,70],[1,1,74],[2,1,77],[3,1,81]],[[0,2,79],[2,1,76],[3,1,74]],[[0,2,77],[2,2,78]],[[0,2,79],[2,1,76],[3,1,72]]],
-  ch:{F:{r:41,v:[57,60,64,67]},Dm:{r:38,v:[53,57,60,64],mi:1},Gm:{r:43,v:[53,58,62,69],mi:1},C7:{r:36,v:[52,58,62,69]},
-   Am:{r:45,v:[55,60,64,67],mi:1},D7:{r:38,v:[54,60,64,71]},Cm:{r:36,v:[51,55,58,62],mi:1},F7:{r:41,v:[51,57,62,67]},
-   Bb:{r:46,v:[57,60,62,65]},Bbm:{r:46,v:[56,61,65,72],mi:1},Eb7:{r:39,v:[55,61,65,72]}},
-  bars:[["F"],["Dm"],["Gm"],["C7"],["Am","D7"],["Gm","C7"],["F"],["Cm","F7"],["Bb"],["Bbm","Eb7"],["Am"],["D7"],["Gm"],["C7"],["F","D7"],["Gm","C7"]]};
  // Song B: Jingle Bells (public domain) — swing arrangement
  const m1=[[0,1,76],[1,1,76],[2,2,76]],m3=[[0,1,76],[1,1,79],[2,1.5,72],[3.5,.5,74]],m4=[[0,4,76]],
   m5=[[0,1,77],[1,1,77],[2,1.5,77],[3.5,.5,77]],m6=[[0,1,77],[1,1,76],[2,1,76],[3,.5,76],[3.5,.5,76]],
@@ -1129,8 +1183,8 @@ const Jazz=(()=>{
   ch:{C69:{r:36,v:[52,57,62,67]},A7:{r:45,v:[55,61,64,66]},Dm7:{r:38,v:[53,57,60,64],mi:1},G7:{r:43,v:[53,59,64,65]},
    F7M:{r:41,v:[57,60,64,67]},CE:{r:40,v:[52,55,60,64]},D9:{r:38,v:[54,60,64,66]},Em7:{r:40,v:[55,59,62,67],mi:1}},
   bars:[["C69"],["A7"],["Dm7"],["G7"],["F7M"],["CE","A7"],["D9"],["G7"],["C69"],["A7"],["Dm7","G7"],["Em7","A7"],["F7M"],["CE","A7"],["Dm7","G7"],["C69"]]};
- [SNOW,JINGLE].forEach(S=>{S.tl=[];S.bars.forEach((cs,bi)=>{const d=4/cs.length;cs.forEach((c,k)=>S.tl.push({b:bi*4+k*d,d,c}));});S.total=S.bars.length*4;});
- const PLAY=[{s:SNOW,n:2},{s:JINGLE,n:1}];
+ [JINGLE].forEach(S=>{S.tl=[];S.bars.forEach((cs,bi)=>{const d=4/cs.length;cs.forEach((c,k)=>S.tl.push({b:bi*4+k*d,d,c}));});S.total=S.bars.length*4;});
+ const PLAY=[{s:JINGLE,n:1}];
  function env(g,t,a,peak,dec){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec);}
  function tone(type,freq,t,peak,dec,cut,dest){const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.type=type;o.frequency.value=freq;f.type="lowpass";f.frequency.value=cut;o.connect(f);f.connect(g);g.connect(dest||master);env(g,t,.008,peak,dec);o.start(t);o.stop(t+dec+.05);}
  let noiseBuf=null;
@@ -1175,7 +1229,7 @@ const Jazz=(()=>{
  const enter=withMusic=>{if(withMusic&&!Jazz.playing)b.click();g.classList.add("out");setTimeout(()=>{g.hidden=true;},650);};
  document.getElementById("gEnter").addEventListener("click",()=>enter(true));
  document.getElementById("gQuiet").addEventListener("click",()=>enter(false));
- try{document.getElementById("gEnter").focus({preventScroll:true});}catch(e){}
+
 })();
 </script>
 </body>
