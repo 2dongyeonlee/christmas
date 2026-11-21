@@ -295,16 +295,55 @@ body .fcard h2{font-family:inherit;font-weight:400!important;font-size:38px;lett
 .gquiet:hover{color:var(--ink)}
 .gfigs{gap:6px;margin-bottom:18px}
 @media (min-width:1024px) and (orientation:landscape){body .title h1{font-size:56px}}
+.gate{overflow:auto}
+.gcard{padding:12px 0}
+.gq{margin:22px 0 12px;font-size:23px;color:var(--ink)}
+.gwho{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:320px;margin:0 auto}
+.gwho button{position:relative;border:1px solid var(--line);background:var(--paper);border-radius:18px;padding:8px 4px 6px;cursor:pointer;font-family:inherit;font-size:19px;color:var(--ink);transition:transform .12s,border-color .2s}
+.gwho button:hover{border-color:var(--ink)}
+.gwho button:active{transform:scale(.96)}
+.gwho button svg{width:62px;height:auto;display:block;margin:0 auto}
+.gwho .gdot{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--green)}
+.gme svg{width:86px;height:auto;display:block;margin:18px auto 0}
+#gStep2 input{display:block;width:100%;max-width:300px;margin:0 auto 6px;text-align:center}
+#gStep2 #gPin{letter-spacing:8px;font-size:22px}
+#gStep2 #gPin:placeholder-shown{letter-spacing:0;font-size:18px}
+.gcard h2,.title h1{white-space:nowrap}
+#gStep2 .hint{margin:0 auto 14px}
+#gStep2 .btn{margin-top:8px;min-width:200px}
+.gmani svg{width:120px;height:auto;display:block;margin:4px auto 0}
+.gmani b{display:block;font-weight:400;font-size:46px;color:var(--red);line-height:1.1}
+.gmhint{margin:8px auto 4px;max-width:300px;font-size:21px;color:var(--green)}
+#gStep3 .btn{margin-top:18px;min-width:200px}
 </style>
 </head>
 <body>
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gTitle"><div class="gcard">
-<div class="gfigs" id="gFigs" aria-hidden="true"></div>
 <p class="eyebrow">Merry Christmas · ’90–’95</p>
 <h2 id="gTitle">정자동의 크리스마스</h2>
 <p class="gsub">2026, 잘 버텼다</p>
-<button class="btn" type="button" id="gEnter">재즈 들으며 들어가기</button>
-<button class="gquiet" type="button" id="gQuiet">소리 없이 들어가기</button>
+<div id="gStep1">
+<p class="gq">누구세요?</p>
+<div class="gwho" id="gWho"></div>
+<button class="gquiet" type="button" id="gQuiet">구경만 할게요</button>
+</div>
+<div id="gStep2" hidden>
+<div class="gme" id="gMe"></div>
+<p class="gq" id="gQ2"></p>
+<input type="password" id="gPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="PIN 숫자 4자리" aria-label="PIN 4자리">
+<p class="hint" id="gPinHint"></p>
+<input type="text" id="gHint" maxlength="40" placeholder="받고 싶은 선물 힌트 (예: 장갑)" aria-label="받고 싶은 선물 힌트">
+<button class="btn" type="button" id="gGo">입장하기</button>
+<p class="msg" id="gMsg" role="status"></p>
+<button class="gquiet" type="button" id="gBack">다른 사람이에요</button>
+</div>
+<div id="gStep3" hidden>
+<p class="gq" id="gQ3"></p>
+<div class="gmani" id="gMani"></div>
+<p class="gmhint" id="gManiHint"></p>
+<p class="hint" id="gManiNote"></p>
+<button class="btn" type="button" id="gIn">마을로 들어가기</button>
+</div>
 </div></div>
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="fx" aria-hidden="true"></canvas>
@@ -1127,6 +1166,61 @@ $("#bReveal").onclick=async()=>{const b=$("#bReveal");if(!opened||!db||busy)retu
  try{await db.doc("reveals/"+boxId).set({to:opened,at:new Date().toISOString()});b.hidden=true;setMsg("#doorMsg","공개했어요.",true);}
  catch(e){err(e,"#doorMsg");}finally{busy=false;}};
 
+
+/* ---------- entrance: pick me → PIN → hint → auto manitto ---------- */
+let gSel=null,gFirst=true;
+function music(){try{const b=$("#musicBtn");if(b&&b.getAttribute("aria-pressed")!=="true")b.click();}catch(e){}}
+function gStep(n){[1,2,3].forEach(i=>{$("#gStep"+i).hidden=i!==n;});}
+function gWho(){const w=$("#gWho");w.innerHTML="";IDS.forEach(id=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-label",id+(P(id).ready?" (입장함)":""));b.innerHTML=fig(id)+"<span>"+id+"</span>"+(P(id).ready?'<i class="gdot"></i>':"");b.onclick=()=>gPick(id);w.appendChild(b);});}
+function gPick(id){gSel=id;const r=P(id).ready;$("#gMe").innerHTML=fig(id);
+ $("#gQ2").textContent=r?id+", 다시 왔네요!":id+", 처음이죠? 열쇠부터 만들어요";
+ $("#gPinHint").textContent=r?"처음에 만든 PIN 4자리":"새 PIN 4자리. 잊으면 편지를 못 열어요.";
+ $("#gPin").value="";$("#gHint").value=r?P(id).hint:"";$("#gGo").textContent=r?"입장하기":"열쇠 만들고 입장하기";setMsg("#gMsg","");gStep(2);}
+function gClose(){const g=$("#gate");g.classList.add("out");setTimeout(()=>{g.hidden=true;},650);render();}
+window.__gateSync=function(){const g=$("#gate");if(!g||g.hidden)return;
+ if(gFirst){gFirst=false;if(meId&&P(meId).ready){gPick(meId);return;}}
+ if(!$("#gStep1").hidden)gWho();};
+async function autoDraw(){
+ if(!db||!canWrite)return false;if(draw&&draw.targets)return true;if(!IDS.every(id=>P(id).ready))return false;
+ try{const m=cycle(),targets={};for(const id of IDS)targets[id]=await encTo(P(id).raw.pub,m[id]);await db.doc("draw/current").set({targets,at:new Date().toISOString()});}catch(e){}
+ try{if(db.refresh)await db.refresh();}catch(e){}
+ return !!(draw&&draw.targets);}
+async function gResult(id){
+ const ok=await autoDraw(),n=IDS.filter(x=>P(x).ready).length;
+ const ct=ok&&draw.targets[id];
+ if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
+  $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML=fig(to)+"<b>"+to+"</b>";
+  const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
+  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";gStep(3);return;}}catch(e){}}
+ $("#gMani").innerHTML="";
+ if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
+ else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명이 다 들어오면 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
+ gStep(3);}
+$("#gQuiet").onclick=()=>{music();gClose();};
+$("#gBack").onclick=()=>{gWho();gStep(1);};
+$("#gIn").onclick=gClose;
+$("#gPin").addEventListener("keydown",e=>{if(e.key==="Enter")$("#gHint").focus();});
+$("#gHint").addEventListener("keydown",e=>{if(e.key==="Enter")$("#gGo").click();});
+$("#gGo").onclick=async()=>{
+ if(busy||!gSel)return;music();
+ const pin=$("#gPin").value.trim(),hint=$("#gHint").value.trim().slice(0,40);
+ if(!/^\d{4}$/.test(pin)){setMsg("#gMsg","PIN은 숫자 4자리예요.");return;}
+ if(!db){setMsg("#gMsg","연결 중이에요. 잠시 후 다시 눌러주세요.");return;}
+ busy=true;$("#gGo").disabled=true;
+ try{const p=P(gSel);
+  if(p.ready){setMsg("#gMsg","확인 중…",true);await unlock(gSel,pin);
+   if(hint!==p.hint)await db.doc("people/"+gSel).set({hint,pub:p.raw.pub,wrap:p.raw.wrap,updatedAt:new Date().toISOString()});}
+  else{setMsg("#gMsg","열쇠 만드는 중…",true);const k=await makeKeys(pin);
+   await db.doc("people/"+gSel).set(Object.assign({hint,updatedAt:new Date().toISOString()},k));
+   if(db.refresh)await db.refresh();await unlock(gSel,pin);}
+  meId=gSel;try{localStorage.setItem("ch-id",gSel);}catch(e){}
+  if(db.refresh)await db.refresh();
+  setMsg("#gMsg","");await gResult(gSel);}
+ catch(e){if(e&&e.message==="pin")setMsg("#gMsg","PIN이 달라요.");else if(e&&e.code==="exists")setMsg("#gMsg","이미 누가 이 자리로 들어왔어요. 새로고침해주세요.");else err(e,"#gMsg");}
+ finally{busy=false;$("#gGo").disabled=false;}
+};
+gWho();
+
 render();
 
 /* ---------- data (Cloudflare Worker /api) ---------- */
@@ -1148,7 +1242,7 @@ render();
   notes=(s.notes||[]).filter(n=>n&&IDS.includes(n.to)&&typeof n.ek==="string"&&typeof n.ct==="string"&&typeof n.iv==="string");
   draw=s.draw&&s.draw.targets&&typeof s.draw.targets==="object"?s.draw:null;
   const rv={};IDS.forEach(id=>{if(s.reveals&&s.reveals[id])rv[id]=s.reveals[id];});reveals=rv;
-  isOwner=!!s.admin;render();}
+  isOwner=!!s.admin;render();try{window.__gateSync&&window.__gateSync();}catch(e){}}
  async function pull(){
   try{const s=await call("GET","state");const sig=JSON.stringify(s);if(sig!==last){last=sig;apply(s);}if($("#note").textContent.startsWith("연결"))note("");return true;}
   catch(e){if(e.status===401){const c=prompt("모임 암호를 입력해주세요");if(c){groupCode=c.trim();try{localStorage.setItem("ch-code",groupCode);}catch(_){}}return false;}
@@ -1163,6 +1257,7 @@ render();
    acquire:async()=>({acquired:true,release(){}})
   })
  };
+ db.refresh=pull;
  canWrite=true;
  await pull();
  let t=null;const loop=()=>{clearTimeout(t);t=setTimeout(async()=>{await pull();loop();},document.hidden?15000:4000);};
@@ -1223,11 +1318,6 @@ const Jazz=(()=>{
  const b=document.getElementById("musicBtn");if(!b)return;
  b.addEventListener("click",()=>{let on=false;try{on=Jazz.toggle();}catch(e){b.title="이 브라우저에서는 소리를 낼 수 없어요";return;}
   b.setAttribute("aria-pressed",String(on));b.classList.toggle("on",on);b.querySelector(".ml").textContent=on?"재즈 캐롤 끄기":"재즈 캐롤 듣기";});
- const g=document.getElementById("gate");if(!g)return;
- try{const f=document.getElementById("gFigs");["JH","JE","DY","WI","KB","EJ"].forEach(id=>{const sp=document.createElement("span");sp.innerHTML=window.__fig(id);f.appendChild(sp);});}catch(e){}
- const enter=withMusic=>{if(withMusic&&!Jazz.playing)b.click();g.classList.add("out");setTimeout(()=>{g.hidden=true;},650);};
- document.getElementById("gEnter").addEventListener("click",()=>enter(true));
- document.getElementById("gQuiet").addEventListener("click",()=>enter(false));
 
 })();
 </script>
