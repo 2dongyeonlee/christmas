@@ -1,0 +1,12 @@
+name = "christmas"
+main = "src/worker.js"
+compatibility_date = "2026-11-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# database_id 없이 두면 첫 배포 때 D1이 자동 생성됨 (wrangler 자동 프로비저닝)
+[[d1_databases]]
+binding = "DB"
+database_name = "christmas-db"
