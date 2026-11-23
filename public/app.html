@@ -17,7 +17,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Yeon+Sung&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Yeon+Sung&family=Gowun+Dodum&display=swap">
 <style>
 :root{--bg:#F6F1E4;--ink:#222;--red:#D24A3E;--green:#4F7A4A;--beige:#EFD9A8;--sky:#CFE0EA;--muted:#6A6257;--paper:#FFFCF4;color-scheme:light}
 *{box-sizing:border-box}
@@ -82,7 +82,7 @@ body.crayon{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .win.lit .glow{opacity:.55}
 .win:not(.open) .eye{animation:none}
 .bulb{animation:tw 2.4s ease-in-out infinite}
-.tw{animation:twk 2s ease-in-out infinite;opacity:.15}
+.tw{animation:twk 2.1s ease-in-out infinite;opacity:.15;will-change:opacity}
 @keyframes twk{0%,100%{opacity:.1}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.tw{animation:none;opacity:.6}}
 .garl{animation:garl 1.1s linear infinite}
@@ -347,9 +347,21 @@ body .musicbtn.on{border-color:var(--ink)}
  .topbar{padding-top:max(0px,calc(50vh - 360px))}
 }
 .help{text-align:center;word-break:keep-all}
-.hsign{animation:hsw 3.2s ease-in-out infinite alternate}
+.hsign{animation:none}
 @keyframes hsw{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
 @media (prefers-reduced-motion:reduce){.hsign{animation:none}}
+
+/* readable text: inputs & descriptions (v31) */
+input[type=password],input[type=text],select,.hint,.lead,.msg,.count,.help,.panel .lead,#gPinHint,#gManiNote,.note,.hero .env{font-family:"Gowun Dodum","Gamja Flower",sans-serif;letter-spacing:-.3px}
+input[type=password],input[type=text],select{font-size:16px}
+#gStep2 #gPin{font-size:22px;letter-spacing:10px}
+#gStep2 #gPin:placeholder-shown,#gStep2 #gHint{font-size:15px;letter-spacing:-.3px}
+.hint,.msg,.count{font-size:13px;line-height:1.5}
+.lead,.panel .lead{font-size:14px;line-height:1.55}
+.help{font-size:14px;line-height:1.75}
+#gManiNote{font-size:13px}
+.hero .env{font-size:14px}
+input::placeholder{color:#A9A59C}
 </style>
 </head>
 <body>
@@ -850,11 +862,11 @@ function sparkle(){
  const svg=$("#house");const old=$("#spk");if(old)old.remove();
  const inv=svg.getScreenCTM();if(!inv)return;const iv=inv.inverse();const pt=svg.createSVGPoint();
  const ns="http://www.w3.org/2000/svg";const g=document.createElementNS(ns,"g");g.id="spk";g.setAttribute("pointer-events","none");
- let out="";
+ const grp=["","",""];
  svg.querySelectorAll(".lb").forEach((el,i)=>{const m=el.getScreenCTM();if(!m)return;pt.x=+el.getAttribute("cx");pt.y=+el.getAttribute("cy");
   const p=pt.matrixTransform(m).matrixTransform(iv);const r=Math.max(5,(+el.getAttribute("r")||3)*m.a/inv.a*2.2);
-  out+='<g class="tw" style="animation-delay:'+(-(i*.37)%2.8).toFixed(2)+'s;animation-duration:'+(1.6+(i*7%10)/10).toFixed(1)+'s"><circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="url(#glowG)"/><circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(r*.22).toFixed(1)+'" fill="#FFFFFF"/></g>';});
- g.innerHTML=out;svg.appendChild(g);
+  grp[i%3]+='<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="url(#glowG)"/><circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(r*.22).toFixed(1)+'" fill="#FFFFFF"/>';});
+ g.innerHTML=grp.map((h,k)=>'<g class="tw" style="animation-delay:-'+(k*.7).toFixed(1)+'s">'+h+'</g>').join("");svg.appendChild(g);
 }
 let spkT=null;addEventListener("resize",()=>{clearTimeout(spkT);spkT=setTimeout(()=>{try{sparkle();}catch(e){}},300);});
 function buildHouse(){
