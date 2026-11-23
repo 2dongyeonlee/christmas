@@ -453,6 +453,29 @@ input::placeholder{color:#A9A59C}
 .gwrap .lp2{margin-left:4px;border-radius:38% 62% 70% 30% / 45% 62% 38% 55%;transform:rotate(10deg);transform-origin:0% 70%}
 .gwrap .lp2::after{left:32%}
 @keyframes untieR{to{transform:translate(52px,-22px) rotate(150deg) scale(.5);opacity:0}}
+
+/* hand-painted bow (v36) */
+.gwrap .rv{width:12px;margin-left:-6px;background:#BE3A40;border:0;opacity:.95}
+.gwrap .rh{height:12px;background:#BE3A40;border:0;opacity:.95}
+.gwrap .pbow{position:absolute;left:50%;top:calc(24% - 34px);width:128px;height:98px;margin-left:-64px;overflow:visible}
+.pbow g.bl,.pbow g.br,.pbow g.bt1,.pbow g.bt2,.pbow g.bk{transform-box:fill-box}
+.pbow .bl{transform-origin:100% 60%;animation:untieL .7s ease-in 1.05s forwards}
+.pbow .br{transform-origin:0% 60%;animation:untieR .7s ease-in 1.05s forwards}
+.pbow .bt1{transform-origin:80% 0%;animation:tailL .55s ease-in 1.25s forwards}
+.pbow .bt2{transform-origin:20% 0%;animation:tailR .55s ease-in 1.25s forwards}
+.pbow .bk{transform-origin:center;animation:knotDrop .5s ease-in 1.45s forwards}
+.pbow{animation:bowWig .5s ease-in-out .35s 2 alternate}
+@keyframes bowWig{to{transform:rotate(-4deg)}}
+@keyframes untieR{to{transform:translate(52px,-22px) rotate(150deg) scale(.5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pbow,.pbow g{animation:none}}
+
+/* bigger bow + make untied pieces fully disappear (v36b) */
+.gwrap .pbow{top:calc(24% - 46px);width:172px;height:132px;margin-left:-86px}
+@keyframes untieL{to{transform:translate(-52px,-22px) rotate(-150deg) scale(.5);opacity:0;visibility:hidden}}
+@keyframes untieR{to{transform:translate(52px,-22px) rotate(150deg) scale(.5);opacity:0;visibility:hidden}}
+@keyframes tailL{to{transform:translate(-30px,40px) rotate(70deg);opacity:0;visibility:hidden}}
+@keyframes tailR{to{transform:translate(30px,40px) rotate(-70deg);opacity:0;visibility:hidden}}
+@keyframes knotDrop{to{transform:translateY(90px) scale(.6);opacity:0;visibility:hidden}}
 </style>
 </head>
 <body>
@@ -1352,7 +1375,7 @@ async function gResult(id){
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
   $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML=fig(to)+"<b>"+to+"</b>";
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
-  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";const ow=$("#gRes .gwrap");if(ow)ow.remove();$("#gRes").insertAdjacentHTML("beforeend",'<div class="gwrap" aria-hidden="true"><i class="pl"></i><i class="pr"></i><i class="rv"></i><i class="rh"></i><i class="lp lp1"></i><i class="lp lp2"></i><i class="tail t1"></i><i class="tail t2"></i><i class="knot"></i></div>');gStep(3);return;}}catch(e){}}
+  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";const ow=$("#gRes .gwrap");if(ow)ow.remove();$("#gRes").insertAdjacentHTML("beforeend",'<div class="gwrap" aria-hidden="true"><i class="pl"></i><i class="pr"></i><i class="rv"></i><i class="rh"></i><svg class="pbow" viewBox="0 0 120 92" aria-hidden="true"><defs><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter></defs><g filter="url(#rough)"><g class="bt1"><path d="M57 38 C52 55 44 70 33 86 L41 82 L45 90 C53 72 59 56 62 41 Z" fill="#BE3A40"/><path d="M57 42 C53 56 47 68 40 80" fill="none" stroke="#D9575C" stroke-width="1.6" opacity=".7"/></g><g class="bt2"><path d="M63 38 C68 55 76 70 87 86 L79 82 L75 90 C67 72 61 56 58 41 Z" fill="#BE3A40"/><path d="M63 42 C67 56 73 68 80 80" fill="none" stroke="#D9575C" stroke-width="1.6" opacity=".7"/></g><g class="bl"><path d="M60 35 C44 10 12 6 10 26 C8 44 38 46 60 35 Z" fill="#BE3A40"/><path d="M58 34 C44 22 22 18 18 27" fill="none" stroke="#8E2A30" stroke-width="2.2" stroke-linecap="round" opacity=".55"/><path d="M50 20 C40 13 26 12 20 18" fill="none" stroke="#D9575C" stroke-width="2" stroke-linecap="round" opacity=".8"/></g><g class="br"><path d="M60 35 C76 10 108 6 110 26 C112 44 82 46 60 35 Z" fill="#BE3A40"/><path d="M62 34 C76 22 98 18 102 27" fill="none" stroke="#8E2A30" stroke-width="2.2" stroke-linecap="round" opacity=".55"/><path d="M70 20 C80 13 94 12 100 18" fill="none" stroke="#D9575C" stroke-width="2" stroke-linecap="round" opacity=".8"/></g><g class="bk"><ellipse cx="60" cy="36" rx="9" ry="10" fill="#A8323A"/><path d="M55 31 C58 34 62 34 65 31" fill="none" stroke="#D9575C" stroke-width="1.6" stroke-linecap="round"/></g></g></svg></div>');gStep(3);return;}}catch(e){}}
  $("#gMani").innerHTML="";$("#gStep3").className="wait";
  if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
  else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
