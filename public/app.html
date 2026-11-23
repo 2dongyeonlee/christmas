@@ -684,7 +684,7 @@ function doorBlock(H,cx,dy){
  if(H.style==="london"){for(let k=0;k<3;k++)s+='<rect x="'+(dx-14-k*6)+'" y="'+(H.base-12+k*4)+'" width="'+(DW+28+k*12)+'" height="5" fill="#E9E2D6" '+K+'/>';}
  else s+='<rect x="'+(dx-12)+'" y="'+(H.base-12)+'" width="'+(DW+24)+'" height="12" fill="#B9B3A8" '+K+'/>';
  // lantern beside door
- s+='<path d="M'+(dx-20)+' '+(dy+30)+' l0 -8 M'+(dx-26)+' '+(dy+30)+' l12 0 l-2 16 l-8 0 Z" fill="#FFE29A" '+K+'/>';
+ const lx0=H.signLeft?dx+DW+20:dx-20;s+='<path d="M'+lx0+' '+(dy+30)+' l0 -8 M'+(lx0-6)+' '+(dy+30)+' l12 0 l-2 16 l-8 0 Z" fill="#FFE29A" '+K+'/>';
  return s;
 }
 function nameplate(cx,y){return '<rect x="'+(cx-26)+'" y="'+y+'" width="52" height="22" rx="3" fill="#FFFCF4" '+K+'/>';}
@@ -771,7 +771,8 @@ function house(H){
  
  s+=doorBlock(H,cx,dy);
  s+='<path d="M'+(x-6)+' '+base+' q14 -12 28 0 q14 -10 28 0 L'+(x+50)+' '+(base+6)+' L'+(x-6)+' '+(base+6)+' Z M'+(x+w-50)+' '+base+' q14 -12 28 0 q14 -10 28 0 L'+(x+w+6)+' '+(base+6)+' L'+(x+w-50)+' '+(base+6)+' Z" fill="#FFFFFF" stroke="#222" stroke-width="1.6"/>';
- const mx=x+w-36,my=base-74,px=mx+12;
+ const SL=!!H.signLeft,my=base-74,px=SL?x+22:x+w-24,SK=H.signK||1;
+ s+='<g transform="translate('+px+' '+base+') scale('+SK+') translate('+(-px)+' '+(-base)+')">';
  // hanging wooden house sign (문패) + small mailbox on the post
  s+='<path d="M'+px+' '+(base-2)+' L'+px+' '+(my-8)+'" '+K+' stroke-width="4"/>';
  s+='<path d="M'+(px-27)+' '+(my-6)+' L'+(px+27)+' '+(my-6)+'" '+K+' stroke-width="3.2"/><circle cx="'+(px-27)+'" cy="'+(my-6)+'" r="2.4" fill="#222"/><circle cx="'+(px+27)+'" cy="'+(my-6)+'" r="2.4" fill="#222"/>';
@@ -782,7 +783,7 @@ function house(H){
  s+='<path d="M'+(px-20)+' '+(my+11)+' q10 -2 20 0 t20 0 M'+(px-20)+' '+(my+22)+' q10 2 20 0 t20 0" fill="none" stroke="#8E5A33" stroke-width="1" opacity=".55"/>';
  s+='<text x="'+px+'" y="'+(my+23)+'" text-anchor="middle" font-family="Yeon Sung, Gamja Flower, sans-serif" font-size="18" fill="#FFF6E2" stroke="#5E3417" stroke-width="2.2" paint-order="stroke">'+id+'</text>';
  s+='</g>';
- s+='<rect x="'+(px-10)+'" y="'+(base-34)+'" width="20" height="13" rx="4" fill="#D24A3E" '+K+' stroke-width="1.8"/><path d="M'+(px-6)+' '+(base-29)+' l12 0" stroke="#222" stroke-width="1.4"/>';
+ s+='<rect x="'+(px-10)+'" y="'+(base-34)+'" width="20" height="13" rx="4" fill="#D24A3E" '+K+' stroke-width="1.8"/><path d="M'+(px-6)+' '+(base-29)+' l12 0" stroke="#222" stroke-width="1.4"/></g>';
  return s;
 }
 function snowman(x,base){return '<g '+K+'><circle cx="'+x+'" cy="'+(base-22)+'" r="22" fill="#FFFFFF"/><circle cx="'+x+'" cy="'+(base-58)+'" r="15" fill="#FFFFFF"/></g><path d="M'+(x-14)+' '+(base-70)+' L'+(x+14)+' '+(base-70)+' L'+(x+10)+' '+(base-92)+' L'+(x-10)+' '+(base-92)+' Z" fill="#222"/><rect x="'+(x-18)+'" y="'+(base-72)+'" width="36" height="4" fill="#222"/><circle cx="'+(x-5)+'" cy="'+(base-60)+'" r="1.8" fill="#222"/><circle cx="'+(x+5)+'" cy="'+(base-60)+'" r="1.8" fill="#222"/><path d="M'+x+' '+(base-55)+' l10 2 -10 2 Z" fill="#E98A3B"/><path d="M'+(x-13)+' '+(base-46)+' q13 8 26 0 l-4 14" fill="none" stroke="#D24A3E" stroke-width="5" stroke-linecap="round"/>';}
@@ -864,13 +865,14 @@ function buildHouse(){
  
  const PLACE={JH:[158,470,.56,0],JE:[254,466,.56,0],DY:[350,466,.56,0],EJ:[446,470,.56,0],WI:[34,700,1.02,0],KB:[568,700,1.02,0]};
  const ROOF={step:112,paris:104,timber:122,bell:114,nordic:108,london:64};
+ let BADGES='';
  const draw=id=>{const H=HOUSES.find(h=>h.id===id),[px,py,sc,rot]=PLACE[id];TF[id]={x:px,y:py,s:sc,rot};
-  const H2=Object.assign({},H,{x:-H.w/2,base:0});
+  const SL=id==="KB",SK=sc<.8?1.55:1;
+  const H2=Object.assign({},H,{x:-H.w/2,base:0,signLeft:SL,signK:SK});
   let g='<g class="win hit" id="w'+id+'" role="button" tabindex="0" aria-label="'+id+'의 집">';
   g+='<g transform="translate('+px+' '+py+') rotate('+rot+') scale('+sc+')">'+house(H2)+'</g>';
-  let [lx,ly]=tp(id,0,-(H.h+ROOF[H.style])-6);lx=Math.min(570,Math.max(30,lx));
-  g+='<g class="lbl"><rect x="'+(lx-24)+'" y="'+(ly-26)+'" width="48" height="26" rx="13" fill="#FFFCF4" '+K+'/><text x="'+lx+'" y="'+(ly-7)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" letter-spacing="-1" font-size="19" fill="#222">'+id+'</text>'+
-   '<g class="badge" id="b'+id+'" style="display:none"><circle cx="'+(lx+(lx>540?-28:28))+'" cy="'+(ly-26)+'" r="12" fill="#D24A3E" '+K+'/><text class="bn" x="'+(lx+(lx>540?-28:28))+'" y="'+(ly-20.5)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" font-size="16" fill="#fff">0</text></g></g>';
+  const sx=SL?(-H.w/2+22):(H.w/2-24),[bx,by]=tp(id,sx+(SL?-24:24)*SK,-74*SK+4);
+  BADGES+='<g class="badge" id="b'+id+'" style="display:none"><circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="12" fill="#D24A3E" '+K+'/><text class="bn" x="'+bx.toFixed(1)+'" y="'+(by+5.5).toFixed(1)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" font-size="16" fill="#fff">0</text></g>';
   return g+'</g>';};
  s+='<g filter="url(#wob)">';
  s+='<rect x="0" y="0" width="600" height="480" fill="#5F72C4"/>';
@@ -916,6 +918,7 @@ function buildHouse(){
  s+='<g class="kid1">'+kid(428,724,"#E2B04A",1)+'</g><g class="kid2">'+kid(456,730,"#7FA8CC",-1)+'</g><g class="dog">'+dog(404,738)+'</g>';
  s+='<g class="sbx"><g class="sby"><circle cx="436" cy="708" r="4" fill="#fff" stroke="#222" stroke-width="1.4"/></g></g>';
  s+='</g>';
+ s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  s+=smokeLayer();
  s+='<rect x="0" y="0" width="600" height="900" filter="url(#paper)" pointer-events="none" style="mix-blend-mode:multiply" opacity=".55"/>';
  $("#house").innerHTML=s;
