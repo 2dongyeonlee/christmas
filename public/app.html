@@ -661,7 +661,7 @@ input::placeholder{color:#A9A59C}
 </div>
 
 <script>
-const PAINTED_FIG=!/style=svg/.test(location.search);
+const PAINTED_FIG=/style=img/.test(location.search);
 (function(){
 const IDS=["JH","JE","DY","WI","KB","EJ"];
 const $=s=>document.querySelector(s);
@@ -737,6 +737,8 @@ const FILTERS={
 let mode="pen";const STYLE=(new URLSearchParams(location.search).get("style")||"");
 FILTERS.paint='<feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.1 0.45" numOctaves="2" seed="11" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.7 1.55" result="m"/><feComposite in="d" in2="m" operator="in" result="c"/><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="3" result="t"/><feColorMatrix in="t" type="matrix" values=".3 0 0 0 .62  0 .3 0 0 .6  0 0 .3 0 .57  0 0 0 0 1" result="w"/><feBlend in="c" in2="w" mode="multiply" result="mm"/><feComposite in="mm" in2="c" operator="in"/>';
 if(STYLE.startsWith("paint"))mode="paint";
+FILTERS.wc='<feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" result="d"/><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="21" result="w"/><feColorMatrix in="w" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 .97  0 0 0 -.6 .3" result="wm"/><feComposite in="wm" in2="d" operator="in" result="wash"/><feBlend in="wash" in2="d" mode="screen" result="b1"/><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="8" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .22  0 0 0 .14 0" result="gm"/><feComposite in="gm" in2="d" operator="in" result="gr"/><feBlend in="gr" in2="b1" mode="multiply"/>';
+if(!STYLE)mode="wc";
 function setMode(m){mode=m;try{localStorage.setItem("ch-style",m);}catch(e){}const f=document.getElementById("wob");if(f)f.innerHTML=FILTERS[m];
  document.querySelectorAll("#styleSw button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));document.body.classList.toggle("crayon",m==="crayon");}
 
@@ -1029,7 +1031,7 @@ function sparkle(){
 let spkT=null;addEventListener("resize",()=>{clearTimeout(spkT);spkT=setTimeout(()=>{try{sparkle();}catch(e){}},300);});
 
 /* ---------- painted village (v39) ---------- */
-const PAINTED=!/style=svg/.test(location.search);
+const PAINTED=/style=img/.test(location.search);
 function buildPainted(){
  const S=600/1024,R=v=>+(v*S).toFixed(1);SMK=[];for(const k in TF)delete TF[k];
  // door boxes in source-image px (1024x1536): x0,y0,x1,y1 ; house hit boxes
@@ -1161,7 +1163,8 @@ function buildHouse(){
  s+='<rect x="0" y="0" width="600" height="900" filter="url(#paper)" pointer-events="none" style="mix-blend-mode:multiply" opacity=".55"/>';
  if(STYLE==="paint")s=s.replace(/stroke="#222"/g,'stroke="#6B4E3D" stroke-opacity=".38"');
  else if(STYLE==="paint2")s=s.replace(/stroke="#222"/g,'stroke="#6B4E3D" stroke-opacity="0"').replace(/stroke:#222/g,'stroke:transparent');
- $("#house").innerHTML=s;if(STYLE.startsWith("paint"))$("#house").style.filter="saturate(1.12) contrast(1.04)";
+ if(mode==="wc")s=s.replace(/stroke="#222"/g,'stroke="#3A2E28" stroke-opacity=".82"');
+ $("#house").innerHTML=s;if(mode==="wc")$("#house").style.filter="saturate(.94)";if(STYLE.startsWith("paint"))$("#house").style.filter="saturate(1.12) contrast(1.04)";
  sparkle();
  spinTree();
  const tg=$("#treeGift");if(tg){tg.addEventListener("click",()=>openDoor());tg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDoor();}});}
