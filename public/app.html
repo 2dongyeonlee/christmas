@@ -513,6 +513,9 @@ input::placeholder{color:#A9A59C}
 #house.painted .gifts{cursor:pointer}
 #house.painted .gifts:hover image{transform:translateY(-2px)}
 #house.painted .smk circle{fill:#F4F1EA}
+.gguest{display:block;margin:14px auto 0;min-height:44px;font-size:16px}
+#gStepG input{display:block;width:100%;max-width:300px;margin:0 auto 6px;text-align:center}
+#gStepG .btn{margin-top:8px;min-width:200px}
 </style>
 </head>
 <body>
@@ -522,7 +525,15 @@ input::placeholder{color:#A9A59C}
 <div id="gStep1">
 <p class="gq">누구세요?</p>
 <div class="gwho" id="gWho"></div>
+<button class="btn quiet gguest" type="button" id="gGuest">6명은 아니지만 편지 남기고 싶어요</button>
 <button class="gquiet" type="button" id="gQuiet">구경만 할게요</button>
+</div>
+<div id="gStepG" hidden>
+<p class="gq">반가워요! 이름을 알려주세요</p>
+<input type="text" id="gGName" maxlength="12" placeholder="편지에 적힐 이름 (예: 민지)" aria-label="손님 이름">
+<p class="hint">집을 눌러 원하는 사람에게 편지를 남길 수 있어요.<br>편지는 그 집 주인만 열어볼 수 있어요.</p>
+<button class="btn" type="button" id="gGGo">마을로 들어가기</button>
+<button class="gquiet" type="button" id="gGBack">돌아가기</button>
 </div>
 <div id="gStep2" hidden>
 <div class="gme" id="gMe"></div>
@@ -1357,7 +1368,8 @@ function fillWindow(id){
  if(!p.ready){const s=document.createElement("p");s.className="hint";s.textContent="아직 불이 꺼져 있어요. "+id+"가 열쇠를 만들면 편지를 넣을 수 있어요.";$("#winEnv").appendChild(s);}
  const sel=$("#wFrom");sel.innerHTML="";const o0=document.createElement("option");o0.value="";o0.textContent="익명";sel.appendChild(o0);
  IDS.filter(k=>k!==id).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=k;sel.appendChild(o);});
- if(meId&&meId!==id)sel.value=meId;
+ if(guestName){const og=document.createElement("option");og.value="g:"+guestName;og.textContent=guestName+" (손님)";sel.appendChild(og);}
+ if(meId&&meId!==id)sel.value=meId;else if(guestName)sel.value="g:"+guestName;
  $("#wText").value="";$("#wCnt").textContent="0/200";$("#oPin").value="";$("#oList").innerHTML="";
  $("#wSend").disabled=!p.ready||!canWrite;
  tab(meId===id?"open":"write");
@@ -1385,7 +1397,7 @@ $("#oGo").onclick=async()=>{
  try{const k=await unlock(curWin,pin);const mine=notes.filter(n=>n.to===curWin).sort((a,b)=>String(a.at).localeCompare(String(b.at)));
   const ul=$("#oList");ul.innerHTML="";let bad=0;
   for(const n of mine){try{const o=await unseal(k,n);const li=document.createElement("li");li.style.setProperty("--r",((Math.random()*2.4)-1.2).toFixed(2)+"deg");li.className="paper-"+([0,1,2,3,4].includes(o.paper)?o.paper:0);if(STK.includes(o.sticker)){const st=document.createElement("span");st.className="stick";st.innerHTML=sticker(o.sticker);li.appendChild(st);}
-   const p=document.createElement("p");p.textContent=String(o.text||"").slice(0,200);const f=document.createElement("span");f.className="from";f.textContent="— "+(IDS.includes(o.from)?o.from:"익명");li.append(p,f);ul.appendChild(li);}catch(e){bad++;}}
+   const p=document.createElement("p");p.textContent=String(o.text||"").slice(0,200);const f=document.createElement("span");f.className="from";const fr=String(o.from||"");f.textContent="— "+(IDS.includes(fr)?fr:(fr.startsWith("g:")&&fr.length>2?fr.slice(2,14)+" (손님)":"익명"));li.append(p,f);ul.appendChild(li);}catch(e){bad++;}}
   setMsg("#winMsg",mine.length?(mine.length-bad)+"개 열었어요."+(bad?" ("+bad+"개는 예전 열쇠로 잠겨서 못 열어요)":""):"아직 편지가 없어요.",true);}
  catch(e){setMsg("#winMsg",e&&e.message==="pin"?"PIN이 달라요.":"열지 못했어요.");}
  finally{busy=false;}
@@ -1466,7 +1478,8 @@ $("#bReveal").onclick=async()=>{const b=$("#bReveal");if(!opened||!db||busy)retu
 /* ---------- entrance: pick me → PIN → hint → auto manitto ---------- */
 let gSel=null,gFirst=true;
 function music(){try{const b=$("#musicBtn");if(b&&b.getAttribute("aria-pressed")!=="true")b.click();}catch(e){}}
-function gStep(n){[1,2,3].forEach(i=>{$("#gStep"+i).hidden=i!==n;});}
+function gStep(n){[1,2,3].forEach(i=>{$("#gStep"+i).hidden=i!==n;});$("#gStepG").hidden=n!=="G";}
+let guestName="";try{guestName=localStorage.getItem("ch-guest")||"";}catch(e){}
 function gWho(){const w=$("#gWho");w.innerHTML="";IDS.forEach(id=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-label",id+(P(id).ready?" (입장함)":""));b.innerHTML=fig(id)+"<span>"+id+"</span>"+(P(id).ready?'<i class="gdot"></i>':"");b.onclick=()=>gPick(id);w.appendChild(b);});}
 function gPick(id){gSel=id;const r=P(id).ready;$("#gMe").innerHTML=fig(id);
  $("#gQ2").textContent=r?id+", 다시 왔네요!":id+", 처음이죠? 열쇠부터 만들어요";
@@ -1493,6 +1506,10 @@ async function gResult(id){
  else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요. 선물은 5만원 상당으로 준비해요.";}
  gStep(3);}
 $("#gQuiet").onclick=()=>{music();gClose();};
+$("#gGuest").onclick=()=>{$("#gGName").value=guestName;gStep("G");try{$("#gGName").focus();}catch(e){}};
+$("#gGBack").onclick=()=>gStep(1);
+$("#gGGo").onclick=()=>{guestName=$("#gGName").value.trim().slice(0,12);try{localStorage.setItem("ch-guest",guestName);}catch(e){}music();gClose();};
+$("#gGName").addEventListener("keydown",e=>{if(e.key==="Enter")$("#gGGo").click();});
 $("#gBack").onclick=()=>{gWho();gStep(1);};
 $("#gIn").onclick=gClose;
 $("#gPin").addEventListener("keydown",e=>{if(e.key==="Enter")$("#gHint").focus();});
