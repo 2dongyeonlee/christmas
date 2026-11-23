@@ -538,7 +538,7 @@ input::placeholder{color:#A9A59C}
 .stage .pop svg{width:120px;height:auto}
 
 /* crayon texture on characters (v48) */
-html:not(.nock) .gwho svg,html:not(.nock) .gme svg,html:not(.nock) .gmani .gpop svg,html:not(.nock) .opt svg,html:not(.nock) .stage .pop svg,html:not(.nock) .fcard svg{filter:url(#ck)}
+
 </style>
 </head>
 <body>
@@ -696,7 +696,7 @@ html:not(.nock) .gwho svg,html:not(.nock) .gme svg,html:not(.nock) .gmani .gpop 
 </div>
 
 <script>
-if(/nock/.test(location.search))document.documentElement.classList.add('nock');
+if(/nock/.test(location.search))document.addEventListener('DOMContentLoaded',()=>{const f=document.getElementById('ck');if(f)f.innerHTML='<feOffset dx="0" dy="0"/>';});
 const PAINTED_FIG=false;
 (function(){
 const IDS=["JH","JE","DY","WI","KB","EJ"];
@@ -763,7 +763,7 @@ function personInner(id){
 }
 function waveHand(id){const P=PPL[id];return '<g class="wv"><path d="M30 104 C22 96 18 86 16 78" fill="none" stroke="#222" stroke-width="13" stroke-linecap="round"/><path d="M30 104 C22 96 18 86 16 78" fill="none" stroke="'+P.shirt+'" stroke-width="8" stroke-linecap="round"/><circle cx="15" cy="72" r="6.5" fill="'+SKIN+'" '+K+'/></g>';}
 window.__fig=id=>fig(id);
-function fig(id){if(PAINTED_FIG&&IDS.includes(id))return '<svg viewBox="0 0 120 131" aria-hidden="true"><image href="/art/p_'+id+'.webp" x="0" y="0" width="120" height="131"/></svg>';return '<svg viewBox="0 0 120 130" aria-hidden="true"><g filter="url(#wob)">'+personInner(id)+'</g></svg>';}
+function fig(id){if(PAINTED_FIG&&IDS.includes(id))return '<svg viewBox="0 0 120 131" aria-hidden="true"><image href="/art/p_'+id+'.webp" x="0" y="0" width="120" height="131"/></svg>';return '<svg viewBox="0 0 120 130" aria-hidden="true"><g filter="url(#ck)">'+personInner(id)+'</g></svg>';}
 
 /* ---------- drawing style ---------- */
 const FILTERS={
