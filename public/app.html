@@ -34,7 +34,7 @@ body.crayon{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .musicbtn svg{width:38px;height:38px}
 .musicbtn.on svg{animation:spin 3s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.wrap{padding-bottom:90px!important}
+.wrap{padding-bottom:32px!important}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
 .dday{background:#D24A3E!important;color:#fff;border-color:#222!important}
 .finale{position:fixed;inset:0;z-index:25;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 0;pointer-events:none}
@@ -333,6 +333,19 @@ body .title h1,body .gcard h2{font-family:"Yeon Sung","Gamja Flower",sans-serif;
 .title h1{font-size:clamp(32px,9vw,46px)}
 .gcard h2{font-size:clamp(34px,9.6vw,50px);margin-bottom:4px}
 @media (min-width:1024px) and (orientation:landscape){body .title h1{font-size:48px}}
+
+/* topbar: D-day + inline music (v27) */
+.topbar{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+body .musicbtn{position:static;min-height:34px;padding:2px 12px 2px 3px;gap:6px;border:1px solid var(--line);border-radius:999px;background:var(--paper);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:16px;color:var(--ink);cursor:pointer}
+body .musicbtn svg{width:28px;height:28px}
+body .musicbtn.on{border-color:var(--ink)}
+.topbar .pill.dday{font-size:17px;padding:4px 14px}
+@media (min-width:1024px) and (orientation:landscape){
+ .wrap{grid-template-rows:repeat(7,min-content) 1fr}
+ #house{grid-row:1 / 9}
+ .title{padding-top:0}
+ .topbar{padding-top:max(0px,calc(50vh - 360px))}
+}
 </style>
 </head>
 <body>
@@ -365,10 +378,11 @@ body .title h1,body .gcard h2{font-family:"Yeon Sung","Gamja Flower",sans-serif;
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="finale" id="finale" hidden role="dialog" aria-modal="true" aria-labelledby="fnTitle"><div class="fcard"><p class="feyebrow">2026-12-03 · 90-95 크리스마스 마켓</p><h2 id="fnTitle">2026, 잘 버텼다!</h2><p class="fsub">각자 우리 집 문을 열고 편지를 확인해요.</p><ul class="reveals" id="fnReveals"></ul><p class="hint" id="fnHint"></p><button class="btn ink" type="button" id="fnClose">마을로 돌아가기</button></div></div>
-<button class="musicbtn" type="button" id="musicBtn" aria-pressed="false"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="#222"/><circle cx="24" cy="24" r="15" fill="none" stroke="#555" stroke-width="1.2"/><circle cx="24" cy="24" r="10" fill="none" stroke="#555" stroke-width="1.2"/><circle cx="24" cy="24" r="7" fill="#D24A3E"/><circle cx="24" cy="24" r="1.8" fill="#FFFCF4"/></svg><span class="ml">재즈 캐롤 듣기</span></button>
+
 
 
 <div class="wrap">
+<div class="topbar"><span class="pill dday" id="dday">12/3 송년회</span><button class="musicbtn" type="button" id="musicBtn" aria-pressed="false"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="#222"/><circle cx="24" cy="24" r="15" fill="none" stroke="#555" stroke-width="1.2"/><circle cx="24" cy="24" r="10" fill="none" stroke="#555" stroke-width="1.2"/><circle cx="24" cy="24" r="7" fill="#D24A3E"/><circle cx="24" cy="24" r="1.8" fill="#FFFCF4"/></svg><span class="ml">재즈 캐롤 듣기</span></button></div>
 <div class="title">
 <p class="eyebrow">Merry &amp; Thanks · ’91–’95</p>
 <h1>우리, 2026년도 잘 버텼다</h1>
@@ -378,7 +392,7 @@ body .title h1,body .gcard h2{font-family:"Yeon Sung","Gamja Flower",sans-serif;
 <svg id="house" viewBox="0 0 600 900" role="group" aria-label="여섯 친구가 사는 크리스마스 마을"></svg>
 
 <p class="help">집을 눌러서 우체통에 하고 싶은 말을 넣어주세요. 편지는 집 주인만 몰래 열어볼 수 있어요. 트리 아래 선물은 마니또 상자예요.</p>
-<div style="text-align:center;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span class="pill dday" id="dday">12/3 송년회</span><span class="pill" id="stat">불러오는 중</span></div>
+<div style="text-align:center;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span class="pill" id="stat">불러오는 중</span></div>
 <div class="bar">
 <button class="btn" type="button" id="keyBtn">내 열쇠 만들기</button>
 <button class="btn red" type="button" id="finaleBtn" hidden>12/3 피날레</button>
