@@ -526,19 +526,25 @@ input::placeholder{color:#A9A59C}
 @keyframes mkhop{from{transform:translateY(0) scale(1)}to{transform:translateY(-10px) scale(1.12)}}
 @media (prefers-reduced-motion:reduce){#house.painted .mk{animation:none}}
 
-/* painted gift box (v47) */
-#gStep3.got .gstage{height:250px}
-#gStep3.got .gstage .gbx{left:22px;width:126px;height:auto}
-#gStep3.got .gstage .glid{left:4px;width:162px;height:auto;bottom:100px}
-#gStep3.got .gstage .gpop{left:30px;width:110px;bottom:74px}
-#gStep3.got .gstage .gpop svg{width:110px;height:auto}
-.gstage .gbx,.gstage .glid,.stage .box,.stage .lid{filter:drop-shadow(0 3px 4px rgba(60,30,20,.18))}
-.stage .box{width:132px;height:auto;bottom:16px}
-.stage .lid{width:166px;height:auto;bottom:118px}
-.stage .pop svg{width:120px;height:auto}
 
-/* crayon texture on characters (v48) */
-
+/* cartoon village life (v49) */
+#house.painted .wglow{mix-blend-mode:screen;opacity:.0;animation:wgl 3s ease-in-out infinite}
+@keyframes wgl{0%,100%{opacity:0}45%{opacity:.55}55%{opacity:.35}}
+#house.painted .treestar{transform-box:fill-box;transform-origin:center;animation:tst 1.6s ease-in-out infinite}
+@keyframes tst{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+#house.painted .lb{animation:twk 1.4s ease-in-out infinite}
+#house.painted .runner{animation:runX 9s ease-in-out infinite}
+#house.painted .runflip{transform-box:fill-box;transform-origin:center;animation:runF 9s steps(1) infinite}
+@keyframes runX{0%{transform:translateX(0)}50%{transform:translateX(150px)}100%{transform:translateX(0)}}
+@keyframes runF{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
+#house.painted .runner .hop{transform-box:fill-box;animation:hopk .25s ease-in-out infinite alternate}
+#house.painted .cary{animation:carY 16s linear infinite}
+#house.painted .carr{animation:carR 13s linear infinite;animation-delay:-5s}
+@keyframes carY{0%{transform:translate(-110px,800px)}100%{transform:translate(720px,770px)}}
+@keyframes carR{0%{transform:translate(720px,850px) scaleX(-1)}100%{transform:translate(-110px,832px) scaleX(-1)}}
+#house.painted .cars image{animation:bump .35s ease-in-out infinite alternate}
+@keyframes bump{to{transform:translateY(-1.5px)}}
+@media (prefers-reduced-motion:reduce){#house.painted .runner,#house.painted .runflip,#house.painted .cary,#house.painted .carr,#house.painted .wglow,#house.painted .treestar{animation:none}}
 </style>
 </head>
 <body>
@@ -679,9 +685,9 @@ input::placeholder{color:#A9A59C}
 <label class="lab" for="bPin">PIN</label>
 <input type="password" id="bPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="숫자 4자리">
 <div class="stage" id="stage" aria-live="polite">
-<img class="lid" src="/art/lid.webp" alt="">
+<svg class="lid" viewBox="0 0 166 34" aria-hidden="true"><rect x="2" y="2" width="162" height="30" rx="5" fill="#E9584C" stroke="#222" stroke-width="3"/><rect x="74" y="2" width="18" height="30" fill="#5E8A4E" stroke="#222" stroke-width="3"/></svg>
 <div class="pop" id="pop"></div>
-<img class="box" src="/art/box.webp" alt="">
+<svg class="box" viewBox="0 0 150 130" aria-hidden="true"><rect x="2" y="2" width="146" height="126" rx="5" fill="#D9493E" stroke="#222" stroke-width="3"/><rect x="66" y="2" width="18" height="126" fill="#5E8A4E" stroke="#222" stroke-width="3"/><text x="36" y="82" font-family="Gamja Flower, sans-serif" letter-spacing="-1" font-size="48" fill="#fff" text-anchor="middle">?</text><text x="114" y="82" font-family="Gamja Flower, sans-serif" letter-spacing="-1" font-size="48" fill="#fff" text-anchor="middle">?</text></svg>
 </div>
 <div class="result" id="result" hidden><div class="who" id="who"></div><p id="whoHint"></p></div>
 <div class="acts">
@@ -1026,7 +1032,7 @@ function stall(x,y,w,flip,c1,c2){
   for(let yy=y-h+8;yy<y-30;yy+=14){s+='<circle class="lb" cx="'+(x+4)+'" cy="'+yy+'" r="2.8" fill="#FFE29A" stroke="#222" stroke-width="1"/><circle class="lb" cx="'+(x+w-4)+'" cy="'+yy+'" r="2.8" fill="#FFE29A" stroke="#222" stroke-width="1"/>';}}
  return s;
 }
-function kid(x,y,c,arm){return '<g '+K+' stroke-width="2"><path d="M'+(x-6)+' '+y+' l2 -18 l8 0 l2 18" fill="'+c+'"/><circle cx="'+x+'" cy="'+(y-24)+'" r="7" fill="#F6D7BF"/><path d="M'+(x-7)+' '+(y-27)+' q7 -10 14 0" fill="#D24A3E"/><path d="M'+(x+4)+' '+(y-14)+' l'+(arm*10)+' -10" fill="none"/></g>';}
+function kid(x,y,c,arm){return '<g '+K+' stroke-width="2"><path d="M'+(x-6)+' '+y+' l2 -18 l8 0 l2 18" fill="'+c+'"/><circle cx="'+x+'" cy="'+(y-24)+'" r="7" fill="#F6D7BF"/><path d="M'+(x-7)+' '+(y-27)+' q7 -10 14 0" fill="#D24A3E"/><path d="M'+(x+4)+' '+(y-14)+' l'+(arm*10)+' -10" fill="none"/><g stroke="none"><circle cx="'+(x-2.5)+'" cy="'+(y-24.5)+'" r="1.1" fill="#222"/><circle cx="'+(x+2.5)+'" cy="'+(y-24.5)+'" r="1.1" fill="#222"/><circle cx="'+(x-4)+'" cy="'+(y-21.5)+'" r="1.3" fill="#F2A9B8"/><circle cx="'+(x+4)+'" cy="'+(y-21.5)+'" r="1.3" fill="#F2A9B8"/></g></g>';}
 function dog(x,y){return '<g '+K+' stroke-width="2"><ellipse cx="'+x+'" cy="'+(y-8)+'" rx="12" ry="7" fill="#C98A5B"/><circle cx="'+(x+12)+'" cy="'+(y-14)+'" r="6" fill="#C98A5B"/><path d="M'+(x-8)+' '+(y-2)+' l0 4 M'+(x+6)+' '+(y-2)+' l0 4 M'+(x-12)+' '+(y-10)+' q-6 -4 -4 -10" fill="none"/></g>';}
 function ferris(cx,cy,r){
  let s='<g pointer-events="none">';
@@ -1071,8 +1077,8 @@ const PAINTED=!/style=svg/.test(location.search);
 function buildPainted(){
  const S=600/1024,R=v=>+(v*S).toFixed(1);SMK=[];for(const k in TF)delete TF[k];
  // door boxes in source-image px (1024x1536): x0,y0,x1,y1 ; house hit boxes
- const DOOR={WI:[18,885,118,1140],JE:[240,452,282,550],JH:[422,428,532,532],EJ:[792,492,834,588],DY:[922,512,976,604],KB:[958,1000,1018,1250]};
- const HIT={WI:[0,60,230,1150],JE:[180,180,310,560],JH:[310,90,650,545],EJ:[650,250,865,595],DY:[865,160,1024,610],KB:[750,640,1024,1260]};
+ const DOOR={WI:[15,1000,150,1225],JE:[195,465,245,575],JH:[395,440,500,570],EJ:[765,470,820,590],DY:[895,480,985,600],KB:[975,1015,1024,1235]};
+ const HIT={WI:[0,390,230,1240],JE:[105,160,280,580],JH:[285,125,605,575],EJ:[610,260,850,595],DY:[850,70,1024,610],KB:[760,630,1024,1240]};
  const CHIM={WI:[30,85],JE:[118,125],JH:[185,130],EJ:[790,330],DY:[945,140],KB:[1000,480]};
  let s='<defs><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient></defs>';
  s+='<image href="/art/village.jpg" x="0" y="0" width="600" height="900" preserveAspectRatio="xMidYMid slice"/>';
@@ -1084,9 +1090,19 @@ function buildPainted(){
  // string lights across the square + tree lights
  const bc=["#FFE29A","#F2A9B8","#FFF3C4","#E2B04A"];s+='<g pointer-events="none">';
 
- for(let i=0;i<36;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=360+v*210,hw=(y-345)*.38,x=284+(u*2-1)*hw*.8;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.2" fill="'+bc[i%4]+'"/>';}
- s+='<circle class="lb" cx="'+R(485)+'" cy="'+R(565)+'" r="7" fill="#FFE29A"/>';
+ [[283,425],[324,425],[292,448],[330,450],[270,472],[312,474],[343,468],[262,500],[296,500],[335,498],[275,525],[318,528],[352,524],[256,550],[300,555],[340,552]].forEach(([x,y],i)=>{s+='<circle class="lb" cx="'+x+'" cy="'+y+'" r="3" fill="'+bc[i%4]+'"/>';});
+ s+='<circle class="treestar" cx="305" cy="381" r="30" fill="url(#glowG)"/>';
+ // window glow flicker
+ [[195,160,230,215],[245,160,280,215],[298,160,333,215],[90,170,118,198],[127,170,153,198],[90,226,118,252],[127,226,153,252],[383,188,407,222],[422,188,447,222],[460,188,485,222],[525,160,553,195],[565,160,594,195],[525,214,553,248],[565,214,594,248],[548,103,570,130],[10,450,52,516],[86,438,113,500],[558,440,588,494],[480,525,555,665]].forEach(([x0,y0,x1,y1],i)=>{s+='<rect class="wglow" x="'+x0+'" y="'+y0+'" width="'+(x1-x0)+'" height="'+(y1-y0)+'" rx="3" fill="#FFF3B0" style="animation-delay:-'+((i*.73)%4).toFixed(2)+'s;animation-duration:'+(2.6+(i*.41)%2.4).toFixed(2)+'s"/>';});
  s+='</g>';
+
+ // ---- live scene (cartoon, matches characters) ----
+ s+='<g class="anim" pointer-events="none">';
+ s+='<g transform="translate(378 712) scale(.95)"><g class="sm">'+snowman(0,0)+'<path d="M-14 -50 L-34 -64 M-28 -60 l-4 -8" stroke="#6B4A32" stroke-width="3" fill="none" stroke-linecap="round"/><g class="smarm"><path d="M14 -50 L34 -66 M28 -62 l6 -6" stroke="#6B4A32" stroke-width="3" fill="none" stroke-linecap="round"/></g></g></g>';
+ s+='<g transform="translate(-376 -386) scale(1.92)"><g class="kid1">'+kid(270,490,"#E2B04A",1)+'</g><g class="kid2">'+kid(306,494,"#7FA8CC",-1)+'</g><g class="sbx"><g class="sby"><circle cx="282" cy="474" r="3.4" fill="#fff" stroke="#222" stroke-width="1.3"/></g></g></g>';
+ s+='<g class="runner"><g class="runflip"><g transform="translate(-225 -710) scale(2)"><g class="hop">'+kid(200,700,"#D24A3E",1)+'</g></g><g class="dog">'+dog(150,712)+'</g></g></g>';
+ s+='</g>';
+ s+='<g class="cars" pointer-events="none"><g class="cary"><image href="/art/cy.webp" x="-90" y="-66" width="178" height="131"/></g><g class="carr"><image href="/art/cr.webp" x="-86" y="-64" width="172" height="128"/></g></g>';
  // houses: clickable area, opening door w/ character, house sign, badge
  let BADGES='',BOWS='';
  ["JH","JE","DY","EJ","WI","KB"].forEach(id=>{
@@ -1114,9 +1130,8 @@ function buildPainted(){
   const [cx0,cy0]=CHIM[id];SMK.push([id,R(cx0),R(cy0)-6]);
  });
  // gift pile under the tree (opens the manitto box)
- s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="226" y="540" width="120" height="50" fill="transparent"/>'+
-  '<image href="/art/gift2.webp" x="232" y="552" width="24" height="29"/><image href="/art/gift0.webp" x="262" y="546" width="30" height="37"/><image href="/art/gift3.webp" x="298" y="556" width="22" height="27"/><image href="/art/gift1.webp" x="250" y="566" width="18" height="22"/></g>';
- s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="284" cy="566" r="62" fill="url(#glowG)"/>'+BOWS+'</g>';
+  s+='<g transform="translate(306 588) scale(.62)">'+giftPile(0,0)+'</g>';
+ s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="306" cy="575" r="62" fill="url(#glowG)"/>'+BOWS+'</g>';
  s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  $("#house").innerHTML=s;$("#house").classList.add("painted");
  sparkle();
@@ -1514,7 +1529,7 @@ async function gResult(id){
  const ok=await autoDraw(),n=IDS.filter(x=>P(x).ready).length;
  const ct=ok&&draw.targets[id];
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
-  $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML='<div class="gstage"><div class="gpop">'+fig(to)+'</div><img class="gbx" src="/art/box.webp" alt=""><img class="glid" src="/art/lid.webp" alt=""></div><b>'+to+'</b>';
+  $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML='<div class="gstage"><div class="gpop">'+fig(to)+'</div><svg class="gbx" viewBox="0 0 150 120" aria-hidden="true"><rect x="3" y="3" width="144" height="114" rx="6" fill="#D9493E" stroke="#222" stroke-width="3.2"/><rect x="65" y="3" width="20" height="114" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><path d="M20 30 l8 8 M120 88 l8 8 M28 92 l-6 6 M118 26 l6 -6" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg><svg class="glid" viewBox="0 0 170 60" aria-hidden="true"><path d="M85 28 C70 4 46 4 48 18 C50 30 72 30 85 28 Z M85 28 C100 4 124 4 122 18 C120 30 98 30 85 28 Z" fill="#E2B04A" stroke="#222" stroke-width="3" stroke-linejoin="round"/><rect x="3" y="26" width="164" height="30" rx="6" fill="#E85B4F" stroke="#222" stroke-width="3.2"/><rect x="75" y="26" width="20" height="30" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><circle cx="85" cy="27" r="6" fill="#E2B04A" stroke="#222" stroke-width="3"/></svg></div><b>'+to+'</b>';
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
   $("#gManiNote").innerHTML="<span class=\"gbudget\">선물은 5만원 상당으로 준비해요</span>12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
  $("#gMani").innerHTML="";$("#gStep3").className="wait";
