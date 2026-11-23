@@ -536,9 +536,13 @@ input::placeholder{color:#A9A59C}
 .stage .box{width:132px;height:auto;bottom:16px}
 .stage .lid{width:166px;height:auto;bottom:118px}
 .stage .pop svg{width:120px;height:auto}
+
+/* crayon texture on characters (v48) */
+html:not(.nock) .gwho svg,html:not(.nock) .gme svg,html:not(.nock) .gmani .gpop svg,html:not(.nock) .opt svg,html:not(.nock) .stage .pop svg,html:not(.nock) .fcard svg{filter:url(#ck)}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="ck" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.4 .7" numOctaves="2" seed="3" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.7 1.32" result="m"/><feComposite in="d" in2="m" operator="in"/></filter></defs></svg>
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gTitle"><div class="gcard">
 <p class="eyebrow">Merry &amp; Thanks · ’91–’95</p>
 <h2 id="gTitle">우리, 2026년도 잘 버텼다</h2>
@@ -692,6 +696,7 @@ input::placeholder{color:#A9A59C}
 </div>
 
 <script>
+if(/nock/.test(location.search))document.documentElement.classList.add('nock');
 const PAINTED_FIG=false;
 (function(){
 const IDS=["JH","JE","DY","WI","KB","EJ"];
@@ -1096,7 +1101,7 @@ function buildPainted(){
   g+='<circle cx="'+mx.toFixed(1)+'" cy="'+my.toFixed(1)+'" r="'+(r+3)+'" fill="#FFFDF7"/>';
   g+='<clipPath id="mc'+id+'"><circle cx="'+mx.toFixed(1)+'" cy="'+my.toFixed(1)+'" r="'+r+'"/></clipPath>';
   g+='<circle cx="'+mx.toFixed(1)+'" cy="'+my.toFixed(1)+'" r="'+r+'" fill="#F3EAD8"/>';
-  g+='<g clip-path="url(#mc'+id+')"><svg x="'+(mx-r).toFixed(1)+'" y="'+(my-r).toFixed(1)+'" width="'+(2*r)+'" height="'+(2*r)+'" viewBox="16 12 88 88">'+personInner(id)+'</svg></g>';
+  g+='<g clip-path="url(#mc'+id+')"><svg filter="url(#ck)" x="'+(mx-r).toFixed(1)+'" y="'+(my-r).toFixed(1)+'" width="'+(2*r)+'" height="'+(2*r)+'" viewBox="16 12 88 88">'+personInner(id)+'</svg></g>';
   const tw=front?36:30,th=front?17:15;
   g+='<rect x="'+(mx-tw/2).toFixed(1)+'" y="'+(my+r-2).toFixed(1)+'" width="'+tw+'" height="'+th+'" rx="'+(th/2)+'" fill="#C9382E" stroke="#FFFDF7" stroke-width="2"/>';
   g+='<text x="'+mx.toFixed(1)+'" y="'+(my+r-2+th*.74).toFixed(1)+'" text-anchor="middle" font-family="Yeon Sung, Gamja Flower, sans-serif" font-size="'+(front?13:11)+'" fill="#FFF6E2">'+id+'</text>';
