@@ -500,6 +500,10 @@ input::placeholder{color:#A9A59C}
 @keyframes gpopUp2{to{transform:translateY(-40px) scale(1);opacity:1}}
 #gStep3.got .gmani b{margin-top:8px}
 @media (prefers-reduced-motion:reduce){#gStep3.got .gstage .gbx,#gStep3.got .gstage .glid,#gStep3.got .gstage .gpop{animation:none;opacity:1}#gStep3.got .gstage .glid{display:none}#gStep3.got .gstage .gpop{transform:translateY(-40px)}}
+
+.gbudget{display:inline-block;margin:0 auto 6px;padding:3px 12px;border-radius:999px;background:#FFF3E0;border:1px solid #F0D6A8;color:#8A5A14;font-size:13px}
+#gManiNote .gbudget{display:table}
+.help .budget{font-weight:400;color:var(--red)}
 </style>
 </head>
 <body>
@@ -548,7 +552,7 @@ input::placeholder{color:#A9A59C}
 
 <svg id="house" viewBox="0 0 600 900" role="group" aria-label="여섯 친구가 사는 크리스마스 마을"></svg>
 
-<p class="help">집을 눌러서 우체통에 하고 싶은 말을 넣어주세요.<br>편지는 집 주인만 몰래 열어볼 수 있어요.<br>트리 아래 선물은 마니또 상자예요.</p>
+<p class="help">집을 눌러서 우체통에 하고 싶은 말을 넣어주세요.<br>편지는 집 주인만 몰래 열어볼 수 있어요.<br>트리 아래 선물은 마니또 상자예요.<br><b class="budget">마니또 선물은 5만원 상당으로 준비해요.</b></p>
 <div style="text-align:center;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span class="pill" id="stat">불러오는 중</span></div>
 <div class="bar">
 <button class="btn" type="button" id="keyBtn">내 열쇠 만들기</button>
@@ -619,6 +623,7 @@ input::placeholder{color:#A9A59C}
 <div class="panel" role="dialog" aria-modal="true" aria-labelledby="doorTitle">
 <h2 id="doorTitle">마니또 선물 상자</h2>
 <p class="lead" id="dState">준비 중</p>
+<p class="hint">마니또 선물은 5만원 상당으로 준비해요.</p>
 <div class="ready" id="dReady" aria-label="열쇠 등록 현황"></div>
 <div class="acts">
 <button class="btn red" type="button" id="dDraw" disabled>뽑기</button>
@@ -1399,10 +1404,10 @@ async function gResult(id){
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
   $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML='<div class="gstage"><div class="gpop">'+fig(to)+'</div><svg class="gbx" viewBox="0 0 150 120" aria-hidden="true"><rect x="3" y="3" width="144" height="114" rx="6" fill="#D9493E" stroke="#222" stroke-width="3.2"/><rect x="65" y="3" width="20" height="114" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><path d="M20 30 l8 8 M120 88 l8 8 M28 92 l-6 6 M118 26 l6 -6" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg><svg class="glid" viewBox="0 0 170 60" aria-hidden="true"><path d="M85 28 C70 4 46 4 48 18 C50 30 72 30 85 28 Z M85 28 C100 4 124 4 122 18 C120 30 98 30 85 28 Z" fill="#E2B04A" stroke="#222" stroke-width="3" stroke-linejoin="round"/><rect x="3" y="26" width="164" height="30" rx="6" fill="#E85B4F" stroke="#222" stroke-width="3.2"/><rect x="75" y="26" width="20" height="30" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><circle cx="85" cy="27" r="6" fill="#E2B04A" stroke="#222" stroke-width="3"/></svg></div><b>'+to+'</b>';
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
-  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
+  $("#gManiNote").innerHTML="<span class=\"gbudget\">선물은 5만원 상당으로 준비해요</span>12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
  $("#gMani").innerHTML="";$("#gStep3").className="wait";
  if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
- else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
+ else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요. 선물은 5만원 상당으로 준비해요.";}
  gStep(3);}
 $("#gQuiet").onclick=()=>{music();gClose();};
 $("#gBack").onclick=()=>{gWho();gStep(1);};
