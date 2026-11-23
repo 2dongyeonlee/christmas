@@ -15,6 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F6F1E4">
 
+<link rel="preload" as="image" href="/art/village.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Yeon+Sung&family=Gowun+Dodum&display=swap">
@@ -504,6 +505,14 @@ input::placeholder{color:#A9A59C}
 .gbudget{display:inline-block;margin:0 auto 6px;padding:3px 12px;border-radius:999px;background:#FFF3E0;border:1px solid #F0D6A8;color:#8A5A14;font-size:13px}
 #gManiNote .gbudget{display:table}
 .help .budget{font-weight:400;color:var(--red)}
+
+/* painted village (v39) */
+#house.painted{background:#1E2A52}
+#house.painted .hsign{animation:none}
+#house.painted .win:not(.open):hover .dl{transform:scaleX(.9)}
+#house.painted .gifts{cursor:pointer}
+#house.painted .gifts:hover image{transform:translateY(-2px)}
+#house.painted .smk circle{fill:#F4F1EA}
 </style>
 </head>
 <body>
@@ -724,7 +733,9 @@ const FILTERS={
  pen:'<feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>',
  crayon:'<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" result="d"/><feMorphology in="d" operator="dilate" radius="0.7" result="t"/><feTurbulence type="fractalNoise" baseFrequency="0.7 0.22" numOctaves="3" seed="11" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.5 1.58" result="m"/><feComposite in="t" in2="m" operator="in"/>'
 };
-let mode="pen";
+let mode="pen";const STYLE=(new URLSearchParams(location.search).get("style")||"");
+FILTERS.paint='<feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.1 0.45" numOctaves="2" seed="11" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.7 1.55" result="m"/><feComposite in="d" in2="m" operator="in" result="c"/><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="3" result="t"/><feColorMatrix in="t" type="matrix" values=".3 0 0 0 .62  0 .3 0 0 .6  0 0 .3 0 .57  0 0 0 0 1" result="w"/><feBlend in="c" in2="w" mode="multiply" result="mm"/><feComposite in="mm" in2="c" operator="in"/>';
+if(STYLE.startsWith("paint"))mode="paint";
 function setMode(m){mode=m;try{localStorage.setItem("ch-style",m);}catch(e){}const f=document.getElementById("wob");if(f)f.innerHTML=FILTERS[m];
  document.querySelectorAll("#styleSw button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));document.body.classList.toggle("crayon",m==="crayon");}
 
@@ -1015,6 +1026,73 @@ function sparkle(){
  g.innerHTML=grp.map((h,k)=>'<g class="tw" style="animation-delay:-'+(k*.7).toFixed(1)+'s">'+h+'</g>').join("");svg.appendChild(g);
 }
 let spkT=null;addEventListener("resize",()=>{clearTimeout(spkT);spkT=setTimeout(()=>{try{sparkle();}catch(e){}},300);});
+
+/* ---------- painted village (v39) ---------- */
+const PAINTED=!/style=svg/.test(location.search);
+function buildPainted(){
+ const S=600/1024,R=v=>+(v*S).toFixed(1);SMK=[];for(const k in TF)delete TF[k];
+ // door boxes in source-image px (1024x1536): x0,y0,x1,y1 ; house hit boxes
+ const DOOR={JH:[118,580,178,695],JE:[378,540,428,632],DY:[600,545,655,638],EJ:[852,600,908,712],WI:[98,1145,178,1310],KB:[868,1210,944,1390]};
+ const HIT={JH:[0,320,240,700],JE:[262,300,492,635],DY:[540,300,760,640],EJ:[790,340,1024,715],WI:[0,790,260,1320],KB:[790,820,1024,1400]};
+ const CHIM={JH:[155,318],JE:[415,308],DY:[648,308],EJ:[940,345],WI:[40,800],KB:[978,830]};
+ let s='<defs><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient></defs>';
+ s+='<image href="/art/village.jpg" x="0" y="0" width="600" height="900" preserveAspectRatio="xMidYMid slice"/>';
+ // sky sparkles: moon + painted stars
+ const spk=(x,y,r,d)=>'<path class="spk4" d="M'+x+' '+(y-r)+' Q'+x+' '+y+' '+(x+r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y+r)+' Q'+x+' '+y+' '+(x-r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y-r)+' Z" fill="#FFF6D6" style="animation-delay:-'+d+'s"/>';
+ s+='<g class="skyfx" pointer-events="none"><circle class="moonhalo" cx="'+R(858)+'" cy="'+R(100)+'" r="44" fill="url(#moonG)"/>';
+ [[155,90,9,0],[408,180,7,1.1],[688,127,8,.5],[918,203,7,1.7],[260,40,5,2.2],[560,60,5,.9],[760,240,5,1.4],[60,230,5,2.6],[980,60,5,.3]].forEach(([x,y,r,d])=>{s+=spk(R(x),R(y),r,d);});
+ s+='</g>';
+ // sleigh with falling gifts (loops every 18s)
+ const SL='M-240 150 Q300 30 840 120',dur=18;
+ s+='<g pointer-events="none"><g><animateMotion path="'+SL+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.55;1" calcMode="linear"/><image href="/art/sleigh.webp" x="-80" y="-40" width="160" height="79"/></g>';
+ const bez=(t)=>{const a=[-240,150],b=[300,30],c=[840,120];return [(1-t)*(1-t)*a[0]+2*(1-t)*t*b[0]+t*t*c[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*b[1]+t*t*c[1]];};
+ [[.36,0,560],[.5,1,600],[.64,3,575]].forEach(([f,gi,gy])=>{const [x,y]=bez(f),t0=f*.55,t1=t0+.13,tF=t1+.08;
+  s+='<g opacity="0"><animate attributeName="opacity" dur="'+dur+'s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;'+t0.toFixed(3)+';'+(t0+.005).toFixed(3)+';'+t1.toFixed(3)+';'+tF.toFixed(3)+';1"/>'+
+   '<animateMotion path="M'+(x-20).toFixed(0)+' '+(y+10).toFixed(0)+' Q'+(x+10).toFixed(0)+' '+(y+60).toFixed(0)+' '+(x+5).toFixed(0)+' '+gy+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" calcMode="linear"/>'+
+   '<g><animateTransform attributeName="transform" type="rotate" values="-20;-20;25;25" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" dur="'+dur+'s" repeatCount="indefinite"/><image href="/art/gift'+gi+'.webp" x="-11" y="-12" width="22" height="25"/></g></g>';});
+ s+='</g>';
+ // string lights across the square + tree lights
+ const bc=["#FFE29A","#F2A9B8","#FFF3C4","#E2B04A"];s+='<g pointer-events="none">';
+ [[0,196,600,206,28],[0,250,600,262,22]].forEach(([x1,y1,x2,y2,sag],li)=>{s+='<path d="M'+x1+' '+y1+' Q300 '+(y1+sag*2)+' '+x2+' '+y2+'" fill="none" stroke="#3A3028" stroke-width="1" opacity=".55"/>';
+  for(let k=1;k<18;k++){const t=k/18,xx=x1+(x2-x1)*t,yy=(1-t)*(1-t)*y1+2*(1-t)*t*(y1+sag*2)+t*t*y2;s+='<circle class="lb" cx="'+xx.toFixed(1)+'" cy="'+(yy+3).toFixed(1)+'" r="2.6" fill="'+bc[(k+li)%4]+'"/>';}});
+ for(let i=0;i<34;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=310+v*290,hw=12+(y-300)*.5*.98,x=300+(u*2-1)*hw*.82;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.2" fill="'+bc[i%4]+'"/>';}
+ s+='<circle class="lb" cx="'+R(515)+'" cy="'+R(503)+'" r="5" fill="#FFE29A"/>';
+ s+='</g>';
+ // car on the road
+ s+='<g pointer-events="none" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.04;.6;.68;1"/><animateMotion path="M150 935 C205 840 300 775 470 692" dur="14s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.68;1" calcMode="linear"/><g><animateTransform attributeName="transform" type="scale" values="1;.55;.55" keyTimes="0;.68;1" dur="14s" repeatCount="indefinite"/><image href="/art/car.webp" x="-44" y="-62" width="88" height="65"/></g></g>';
+ // houses: clickable area, opening door w/ character, house sign, badge
+ let BADGES='',BOWS='';
+ ["JH","JE","DY","EJ","WI","KB"].forEach(id=>{
+  const [a,b,c,d]=DOOR[id].map(R),dw=+(c-a).toFixed(1),dh=+(d-b).toFixed(1),[h0,h1,h2,h3]=HIT[id].map(R),front=id==="WI"||id==="KB";
+  const dp=doorD("arch",a,b,dw,dh);
+  let g='<g class="win hit" id="w'+id+'" role="button" tabindex="0" aria-label="'+id+'의 집">';
+  g+='<rect x="'+h0+'" y="'+h1+'" width="'+(h2-h0).toFixed(1)+'" height="'+(h3-h1).toFixed(1)+'" fill="transparent"/>';
+  g+='<clipPath id="dc'+id+'"><path d="'+dp+'"/></clipPath>';
+  const cw=dw*1.7,ch=cw*130/120;
+  g+='<g clip-path="url(#dc'+id+')"><rect x="'+a+'" y="'+b+'" width="'+dw+'" height="'+dh+'" fill="#FFD983"/><rect x="'+a+'" y="'+(d-dh*.16).toFixed(1)+'" width="'+dw+'" height="'+(dh*.16).toFixed(1)+'" fill="#C98A4B"/>'+
+   '<g class="fg"><g class="pp"><svg x="'+(a+dw/2-cw/2).toFixed(1)+'" y="'+(d-ch+2).toFixed(1)+'" width="'+cw.toFixed(1)+'" height="'+ch.toFixed(1)+'" viewBox="0 0 120 130" overflow="visible">'+waveHand(id)+personInner(id)+'</svg></g></g></g>';
+  g+='<g class="dl" style="transform-box:view-box;transform-origin:'+a+'px '+(b+dh/2).toFixed(1)+'px"><svg x="'+a+'" y="'+b+'" width="'+dw+'" height="'+dh+'" viewBox="'+(a/S).toFixed(1)+' '+(b/S).toFixed(1)+' '+(dw/S).toFixed(1)+' '+(dh/S).toFixed(1)+'" preserveAspectRatio="none"><image href="/art/village.jpg" width="1024" height="1536"/></svg></g>';
+  // hanging wooden sign above the door
+  const sw=front?52:40,sh=front?24:19,sx=a+dw/2-sw/2,sy=b-sh-(front?10:8),fs=front?18:14;
+  g+='<g class="hsign" pointer-events="none"><path d="M'+(sx+7)+' '+(sy-4)+' L'+(sx+7)+' '+sy+' M'+(sx+sw-7)+' '+(sy-4)+' L'+(sx+sw-7)+' '+sy+'" stroke="#4A3626" stroke-width="1.4"/>'+
+   '<rect x="'+sx.toFixed(1)+'" y="'+sy.toFixed(1)+'" width="'+sw+'" height="'+sh+'" rx="5" fill="#B07A4E"/><rect x="'+(sx+2.5).toFixed(1)+'" y="'+(sy+2.5).toFixed(1)+'" width="'+(sw-5)+'" height="'+(sh-5)+'" rx="3.5" fill="none" stroke="#8A5A36" stroke-width="1"/>'+
+   '<text x="'+(sx+sw/2).toFixed(1)+'" y="'+(sy+sh*.74).toFixed(1)+'" text-anchor="middle" font-family="Yeon Sung, Gamja Flower, sans-serif" font-size="'+fs+'" fill="#FFF6E2">'+id+'</text></g>';
+  g+='</g>';s+=g;
+  const bx=sx+sw-2,by=sy-1;
+  BADGES+='<g class="badge" id="b'+id+'" style="display:none"><circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="10" fill="#C9382E" stroke="#FFF6E2" stroke-width="2"/><text class="bn" x="'+bx.toFixed(1)+'" y="'+(by+4.6).toFixed(1)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" font-size="14" fill="#fff">0</text></g>';
+  BOWS+='<g transform="translate('+(sx+6).toFixed(1)+' '+(sy+2).toFixed(1)+') scale('+(front?1:.8)+')"><path d="M0 0 C-10 -10 -16 -2 -10 4 C-6 7 -2 3 0 0 Z M0 0 C10 -10 16 -2 10 4 C6 7 2 3 0 0 Z" fill="#C9382E"/><circle r="3" fill="#A8323A"/></g>';
+  const [cx0,cy0]=CHIM[id];SMK.push([id,R(cx0),R(cy0)-6]);
+ });
+ // gift pile under the tree (opens the manitto box)
+ s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="222" y="596" width="156" height="54" fill="transparent"/>'+
+  '<image href="/art/gift2.webp" x="230" y="606" width="34" height="38"/><image href="/art/gift0.webp" x="281" y="600" width="42" height="49"/><image href="/art/gift3.webp" x="332" y="608" width="32" height="35"/><image href="/art/gift1.webp" x="262" y="622" width="26" height="29"/></g>';
+ s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="300" cy="628" r="70" fill="url(#glowG)"/>'+BOWS+'</g>';
+ s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
+ s+=smokeLayer();
+ $("#house").innerHTML=s;$("#house").classList.add("painted");
+ sparkle();
+ const tg=$("#treeGift");if(tg){tg.addEventListener("click",()=>openDoor());tg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDoor();}});}
+}
 function buildHouse(){
  SMK=[];let s='<defs><filter id="wob" x="-5%" y="-5%" width="110%" height="110%">'+FILTERS[mode]+'</filter>'+
  '<filter id="soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient><filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="a"/><feColorMatrix in="a" values="0 0 0 0 .42  0 0 0 0 .36  0 0 0 0 .3  0 0 0 .5 -.05" result="g"/><feTurbulence type="fractalNoise" baseFrequency=".007" numOctaves="2" seed="21" result="b"/><feColorMatrix in="b" values="0 0 0 0 .25  0 0 0 0 .22  0 0 0 0 .3  0 0 0 .55 -.18" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="g"/></feMerge></filter>'+
@@ -1081,13 +1159,15 @@ function buildHouse(){
  s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  s+=smokeLayer();
  s+='<rect x="0" y="0" width="600" height="900" filter="url(#paper)" pointer-events="none" style="mix-blend-mode:multiply" opacity=".55"/>';
- $("#house").innerHTML=s;
+ if(STYLE==="paint")s=s.replace(/stroke="#222"/g,'stroke="#6B4E3D" stroke-opacity=".38"');
+ else if(STYLE==="paint2")s=s.replace(/stroke="#222"/g,'stroke="#6B4E3D" stroke-opacity="0"').replace(/stroke:#222/g,'stroke:transparent');
+ $("#house").innerHTML=s;if(STYLE.startsWith("paint"))$("#house").style.filter="saturate(1.12) contrast(1.04)";
  sparkle();
  spinTree();
  const tg=$("#treeGift");if(tg){tg.addEventListener("click",()=>openDoor());tg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDoor();}});}
 }
 
-buildHouse();
+if(PAINTED)buildPainted();else buildHouse();
 
 /* ---------- snow ---------- */
 (function(){
