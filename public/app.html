@@ -347,6 +347,9 @@ body .musicbtn.on{border-color:var(--ink)}
  .topbar{padding-top:max(0px,calc(50vh - 360px))}
 }
 .help{text-align:center;word-break:keep-all}
+.hsign{animation:hsw 3.2s ease-in-out infinite alternate}
+@keyframes hsw{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.hsign{animation:none}}
 </style>
 </head>
 <body>
@@ -768,8 +771,18 @@ function house(H){
  
  s+=doorBlock(H,cx,dy);
  s+='<path d="M'+(x-6)+' '+base+' q14 -12 28 0 q14 -10 28 0 L'+(x+50)+' '+(base+6)+' L'+(x-6)+' '+(base+6)+' Z M'+(x+w-50)+' '+base+' q14 -12 28 0 q14 -10 28 0 L'+(x+w+6)+' '+(base+6)+' L'+(x+w-50)+' '+(base+6)+' Z" fill="#FFFFFF" stroke="#222" stroke-width="1.6"/>';
- const mx=x+w-36,my=base-64;
- s+='<path d="M'+(mx+12)+' '+(my+26)+' L'+(mx+12)+' '+(base-2)+'" '+K+' stroke-width="4"/><rect x="'+(mx-8)+'" y="'+my+'" width="40" height="26" rx="11" fill="#D24A3E" '+K+'/><path d="M'+(mx+32)+' '+(my+4)+' l8 0 0 10" fill="none" '+K+'/><text x="'+(mx+12)+'" y="'+(my+19)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" letter-spacing="-1" font-size="17" fill="#FFFFFF">'+id+'</text>';
+ const mx=x+w-36,my=base-74,px=mx+12;
+ // hanging wooden house sign (문패) + small mailbox on the post
+ s+='<path d="M'+px+' '+(base-2)+' L'+px+' '+(my-8)+'" '+K+' stroke-width="4"/>';
+ s+='<path d="M'+(px-27)+' '+(my-6)+' L'+(px+27)+' '+(my-6)+'" '+K+' stroke-width="3.2"/><circle cx="'+(px-27)+'" cy="'+(my-6)+'" r="2.4" fill="#222"/><circle cx="'+(px+27)+'" cy="'+(my-6)+'" r="2.4" fill="#222"/>';
+ s+='<g class="hsign" style="transform-origin:'+px+'px '+(my-6)+'px">';
+ s+='<path d="M'+(px-18)+' '+(my-6)+' L'+(px-18)+' '+(my+2)+' M'+(px+18)+' '+(my-6)+' L'+(px+18)+' '+(my+2)+'" stroke="#222" stroke-width="1.6" stroke-dasharray="2 1.5"/>';
+ s+='<rect x="'+(px-26)+'" y="'+(my+2)+'" width="52" height="28" rx="5" fill="#B97B47" '+K+'/>';
+ s+='<rect x="'+(px-22)+'" y="'+(my+6)+'" width="44" height="20" rx="3" fill="none" stroke="#7E4A26" stroke-width="1.4"/>';
+ s+='<path d="M'+(px-20)+' '+(my+11)+' q10 -2 20 0 t20 0 M'+(px-20)+' '+(my+22)+' q10 2 20 0 t20 0" fill="none" stroke="#8E5A33" stroke-width="1" opacity=".55"/>';
+ s+='<text x="'+px+'" y="'+(my+23)+'" text-anchor="middle" font-family="Yeon Sung, Gamja Flower, sans-serif" font-size="18" fill="#FFF6E2" stroke="#5E3417" stroke-width="2.2" paint-order="stroke">'+id+'</text>';
+ s+='</g>';
+ s+='<rect x="'+(px-10)+'" y="'+(base-34)+'" width="20" height="13" rx="4" fill="#D24A3E" '+K+' stroke-width="1.8"/><path d="M'+(px-6)+' '+(base-29)+' l12 0" stroke="#222" stroke-width="1.4"/>';
  return s;
 }
 function snowman(x,base){return '<g '+K+'><circle cx="'+x+'" cy="'+(base-22)+'" r="22" fill="#FFFFFF"/><circle cx="'+x+'" cy="'+(base-58)+'" r="15" fill="#FFFFFF"/></g><path d="M'+(x-14)+' '+(base-70)+' L'+(x+14)+' '+(base-70)+' L'+(x+10)+' '+(base-92)+' L'+(x-10)+' '+(base-92)+' Z" fill="#222"/><rect x="'+(x-18)+'" y="'+(base-72)+'" width="36" height="4" fill="#222"/><circle cx="'+(x-5)+'" cy="'+(base-60)+'" r="1.8" fill="#222"/><circle cx="'+(x+5)+'" cy="'+(base-60)+'" r="1.8" fill="#222"/><path d="M'+x+' '+(base-55)+' l10 2 -10 2 Z" fill="#E98A3B"/><path d="M'+(x-13)+' '+(base-46)+' q13 8 26 0 l-4 14" fill="none" stroke="#D24A3E" stroke-width="5" stroke-linecap="round"/>';}
