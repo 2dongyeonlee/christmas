@@ -507,7 +507,7 @@ input::placeholder{color:#A9A59C}
 .help .budget{font-weight:400;color:var(--red)}
 
 /* painted village (v39) */
-#house.painted{background:#1E2A52}
+#house.painted{background:#F4F0E6}
 #house.painted .hsign{animation:none}
 #house.painted .win:not(.open):hover .dl{transform:scaleX(.9)}
 #house.painted .gifts{cursor:pointer}
@@ -661,6 +661,7 @@ input::placeholder{color:#A9A59C}
 </div>
 
 <script>
+const PAINTED_FIG=!/style=svg/.test(location.search);
 (function(){
 const IDS=["JH","JE","DY","WI","KB","EJ"];
 const $=s=>document.querySelector(s);
@@ -726,7 +727,7 @@ function personInner(id){
 }
 function waveHand(id){const P=PPL[id];return '<g class="wv"><path d="M30 104 C22 96 18 86 16 78" fill="none" stroke="#222" stroke-width="13" stroke-linecap="round"/><path d="M30 104 C22 96 18 86 16 78" fill="none" stroke="'+P.shirt+'" stroke-width="8" stroke-linecap="round"/><circle cx="15" cy="72" r="6.5" fill="'+SKIN+'" '+K+'/></g>';}
 window.__fig=id=>fig(id);
-function fig(id){return '<svg viewBox="0 0 120 130" aria-hidden="true"><g filter="url(#wob)">'+personInner(id)+'</g></svg>';}
+function fig(id){if(PAINTED_FIG&&IDS.includes(id))return '<svg viewBox="0 0 120 131" aria-hidden="true"><image href="/art/p_'+id+'.webp" x="0" y="0" width="120" height="131"/></svg>';return '<svg viewBox="0 0 120 130" aria-hidden="true"><g filter="url(#wob)">'+personInner(id)+'</g></svg>';}
 
 /* ---------- drawing style ---------- */
 const FILTERS={
@@ -1032,33 +1033,33 @@ const PAINTED=!/style=svg/.test(location.search);
 function buildPainted(){
  const S=600/1024,R=v=>+(v*S).toFixed(1);SMK=[];for(const k in TF)delete TF[k];
  // door boxes in source-image px (1024x1536): x0,y0,x1,y1 ; house hit boxes
- const DOOR={JH:[127,636,174,735],JE:[395,594,436,688],DY:[664,631,708,727],EJ:[854,656,888,756],WI:[147,1118,206,1300],KB:[785,1143,836,1310]};
- const HIT={JH:[45,70,240,745],JE:[245,295,470,690],DY:[520,65,850,730],EJ:[825,430,1024,765],WI:[0,770,350,1310],KB:[635,820,1000,1320]};
- const CHIM={JH:[75,82],JE:[414,300],DY:[602,78],EJ:[975,440],WI:[42,782],KB:[940,832]};
+ const DOOR={JH:[120,652,180,768],JE:[420,672,468,776],DY:[637,698,690,788],EJ:[852,737,898,820],WI:[72,1150,138,1272],KB:[802,1088,864,1212]};
+ const HIT={JH:[65,290,240,780],JE:[280,490,505,778],DY:[558,258,775,792],EJ:[800,595,965,822],WI:[35,865,325,1282],KB:[675,890,990,1222]};
+ const CHIM={JH:[112,298],JE:[440,494],DY:[597,264],EJ:[916,600],WI:[104,874],KB:[938,898]};
  let s='<defs><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient></defs>';
  s+='<image href="/art/village.jpg" x="0" y="0" width="600" height="900" preserveAspectRatio="xMidYMid slice"/>';
  // sky sparkles: moon + painted stars
  const spk=(x,y,r,d)=>'<path class="spk4" d="M'+x+' '+(y-r)+' Q'+x+' '+y+' '+(x+r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y+r)+' Q'+x+' '+y+' '+(x-r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y-r)+' Z" fill="#FFF6D6" style="animation-delay:-'+d+'s"/>';
  s+='<g class="skyfx" pointer-events="none">';
- [[300,90,8,0],[470,200,7,1.1],[890,150,8,.5],[960,300,6,1.7],[260,250,5,2.2],[420,60,5,.9],[880,40,5,1.4],[30,60,5,2.6]].forEach(([x,y,r,d])=>{s+=spk(R(x),R(y),r,d);});
+ [[230,140,8,0],[470,230,6,1.1],[880,170,8,.5],[930,420,6,1.7],[330,330,5,2.2],[650,140,6,.9],[150,260,5,1.4],[820,360,5,2.6]].forEach(([x,y,r,d])=>{s+=spk(R(x),R(y),r,d);});
  s+='</g>';
  // sleigh with falling gifts (loops every 18s)
  const SL='M-240 150 Q300 30 840 120',dur=18;
- s+='<g pointer-events="none"><g><animateMotion path="'+SL+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.55;1" calcMode="linear"/><image href="/art/sleigh.webp" x="-80" y="-40" width="160" height="79"/></g>';
+ s+='<g pointer-events="none"><g><animateMotion path="'+SL+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.55;1" calcMode="linear"/><image href="/art/sleigh.webp" x="-80" y="-31" width="160" height="62"/></g>';
  const bez=(t)=>{const a=[-240,150],b=[300,30],c=[840,120];return [(1-t)*(1-t)*a[0]+2*(1-t)*t*b[0]+t*t*c[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*b[1]+t*t*c[1]];};
- [[.36,0,700],[.5,1,720],[.64,3,705]].forEach(([f,gi,gy])=>{const [x,y]=bez(f),t0=f*.55,t1=t0+.13,tF=t1+.08;
+ [[.36,0,705],[.5,1,722],[.64,3,708]].forEach(([f,gi,gy])=>{const [x,y]=bez(f),t0=f*.55,t1=t0+.13,tF=t1+.08;
   s+='<g opacity="0"><animate attributeName="opacity" dur="'+dur+'s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;'+t0.toFixed(3)+';'+(t0+.005).toFixed(3)+';'+t1.toFixed(3)+';'+tF.toFixed(3)+';1"/>'+
    '<animateMotion path="M'+(x-20).toFixed(0)+' '+(y+10).toFixed(0)+' Q'+(x+10).toFixed(0)+' '+(y+60).toFixed(0)+' '+(x+5).toFixed(0)+' '+gy+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" calcMode="linear"/>'+
-   '<g><animateTransform attributeName="transform" type="rotate" values="-20;-20;25;25" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" dur="'+dur+'s" repeatCount="indefinite"/><image href="/art/gift'+gi+'.webp" x="-11" y="-12" width="22" height="25"/></g></g>';});
+   '<g><animateTransform attributeName="transform" type="rotate" values="-20;-20;25;25" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" dur="'+dur+'s" repeatCount="indefinite"/><image href="/art/gift'+gi+'.webp" x="-11" y="-13" width="22" height="27"/></g></g>';});
  s+='</g>';
  // string lights across the square + tree lights
  const bc=["#FFE29A","#F2A9B8","#FFF3C4","#E2B04A"];s+='<g pointer-events="none">';
 
- for(let i=0;i<34;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=338+v*272,hw=6+(y-330)*.29,x=301+(u*2-1)*hw*.8;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.2" fill="'+bc[i%4]+'"/>';}
- s+='<circle class="lb" cx="'+R(521)+'" cy="'+R(548)+'" r="5" fill="#FFE29A"/>';
+ for(let i=0;i<26;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=486+v*140,hw=4+(y-472)*.36,x=302+(u*2-1)*hw*.78;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2" fill="'+bc[i%4]+'"/>';}
+ s+='<circle class="lb" cx="'+R(517)+'" cy="'+R(802)+'" r="5" fill="#FFE29A"/>';
  s+='</g>';
  // car on the road
- s+='<g pointer-events="none" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.04;.6;.68;1"/><animateMotion path="M-70 884 L680 872" dur="14s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.68;1" calcMode="linear"/><image href="/art/car.webp" x="-36" y="-50" width="72" height="53"/></g>';
+ s+='<g pointer-events="none" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.04;.6;.68;1"/><animateMotion path="M-70 884 L680 872" dur="14s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.68;1" calcMode="linear"/><image href="/art/car.webp" x="-36" y="-54" width="72" height="56"/></g>';
  // houses: clickable area, opening door w/ character, house sign, badge
  let BADGES='',BOWS='';
  ["JH","JE","DY","EJ","WI","KB"].forEach(id=>{
@@ -1069,7 +1070,7 @@ function buildPainted(){
   g+='<clipPath id="dc'+id+'"><path d="'+dp+'"/></clipPath>';
   const cw=dw*1.7,ch=cw*130/120;
   g+='<g clip-path="url(#dc'+id+')"><rect x="'+a+'" y="'+b+'" width="'+dw+'" height="'+dh+'" fill="#FFD983"/><rect x="'+a+'" y="'+(d-dh*.16).toFixed(1)+'" width="'+dw+'" height="'+(dh*.16).toFixed(1)+'" fill="#C98A4B"/>'+
-   '<g class="fg"><g class="pp"><svg x="'+(a+dw/2-cw/2).toFixed(1)+'" y="'+(d-ch+2).toFixed(1)+'" width="'+cw.toFixed(1)+'" height="'+ch.toFixed(1)+'" viewBox="0 0 120 130" overflow="visible">'+waveHand(id)+personInner(id)+'</svg></g></g></g>';
+   '<g class="fg"><g class="pp"><image href="/art/p_'+id+'.webp" x="'+(a+dw/2-dw*.58).toFixed(1)+'" y="'+(b+dh*.12).toFixed(1)+'" width="'+(dw*1.16).toFixed(1)+'" height="'+(dw*1.16*262/240).toFixed(1)+'"/></g></g></g>';
   g+='<g class="dl" style="transform-box:view-box;transform-origin:'+a+'px '+(b+dh/2).toFixed(1)+'px"><svg x="'+a+'" y="'+b+'" width="'+dw+'" height="'+dh+'" viewBox="'+(a/S).toFixed(1)+' '+(b/S).toFixed(1)+' '+(dw/S).toFixed(1)+' '+(dh/S).toFixed(1)+'" preserveAspectRatio="none"><image href="/art/village.jpg" width="1024" height="1536"/></svg></g>';
   // hanging wooden sign above the door
   const sw=front?52:40,sh=front?24:19,sx=a+dw/2-sw/2,sy=b-sh-(front?10:8),fs=front?18:14;
@@ -1083,9 +1084,9 @@ function buildPainted(){
   const [cx0,cy0]=CHIM[id];SMK.push([id,R(cx0),R(cy0)-6]);
  });
  // gift pile under the tree (opens the manitto box)
- s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="236" y="598" width="140" height="56" fill="transparent"/>'+
-  '<image href="/art/gift2.webp" x="246" y="612" width="30" height="34"/><image href="/art/gift0.webp" x="284" y="604" width="38" height="44"/><image href="/art/gift3.webp" x="328" y="614" width="28" height="31"/><image href="/art/gift1.webp" x="270" y="628" width="22" height="25"/></g>';
- s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="302" cy="626" r="70" fill="url(#glowG)"/>'+BOWS+'</g>';
+ s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="246" y="604" width="116" height="48" fill="transparent"/>'+
+  '<image href="/art/gift2.webp" x="252" y="614" width="26" height="32"/><image href="/art/gift0.webp" x="284" y="606" width="32" height="39"/><image href="/art/gift3.webp" x="322" y="616" width="24" height="29"/><image href="/art/gift1.webp" x="270" y="626" width="20" height="24"/></g>';
+ s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="302" cy="630" r="66" fill="url(#glowG)"/>'+BOWS+'</g>';
  s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  s+=smokeLayer();
  $("#house").innerHTML=s;$("#house").classList.add("painted");
