@@ -386,6 +386,36 @@ input::placeholder{color:#A9A59C}
 @keyframes gcard{from{transform:rotateX(70deg) translateY(20px);opacity:0}}
 #dResetPw{max-width:180px;display:inline-block;margin-right:6px}
 @media (prefers-reduced-motion:reduce){.gpglow,.drawnBanner,#gStep3.got .gres{animation:none}}
+
+/* ribbon untie reveal (v34) */
+#gStep3.got .gres{animation:none}
+#gStep3.got .gres::before,#gStep3.got .gbow{display:none}
+.gwrap{position:absolute;inset:0;z-index:3;pointer-events:none;animation:gwHide 0s linear 2.2s forwards}
+.gwrap i{position:absolute;display:block}
+.gwrap .pl,.gwrap .pr{top:0;bottom:0;width:52%;background-color:#C9382E;background-image:radial-gradient(circle,rgba(255,255,255,.35) 2px,transparent 2.5px);background-size:22px 22px}
+.gwrap .pl{left:0;animation:wrapL .7s cubic-bezier(.6,0,.4,1) 1.35s forwards}
+.gwrap .pr{right:0;animation:wrapR .7s cubic-bezier(.6,0,.4,1) 1.35s forwards}
+.gwrap .rv{left:50%;top:0;bottom:0;width:22px;margin-left:-11px;background:#5E8A4E;border-left:2px solid #2F5D46;border-right:2px solid #2F5D46;animation:rvOff .55s ease-in .95s forwards}
+.gwrap .rh{left:0;right:0;top:38%;height:22px;background:#5E8A4E;border-top:2px solid #2F5D46;border-bottom:2px solid #2F5D46;transform-origin:center;animation:rhOff .5s ease-in .95s forwards}
+.gwrap .lp{top:calc(38% - 22px);left:50%;width:44px;height:30px;border:6px solid #E2B04A;border-radius:50%;background:transparent}
+.gwrap .lp1{margin-left:-46px;transform:rotate(-18deg);transform-origin:100% 60%;animation:untieL .6s ease-in .35s forwards}
+.gwrap .lp2{margin-left:2px;transform:rotate(18deg);transform-origin:0% 60%;animation:untieR .6s ease-in .35s forwards}
+.gwrap .tail{top:calc(38% + 10px);left:50%;width:8px;height:40px;background:#E2B04A;border-radius:2px}
+.gwrap .t1{margin-left:-14px;transform:rotate(18deg);transform-origin:top;animation:tailL .5s ease-in .55s forwards}
+.gwrap .t2{margin-left:6px;transform:rotate(-18deg);transform-origin:top;animation:tailR .5s ease-in .55s forwards}
+.gwrap .knot{top:calc(38% - 4px);left:50%;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#E2B04A;border:2px solid #B8862E;animation:knotDrop .5s ease-in .7s forwards}
+@keyframes untieL{to{transform:translate(-46px,-18px) rotate(-140deg) scale(.5);opacity:0}}
+@keyframes untieR{to{transform:translate(46px,-18px) rotate(140deg) scale(.5);opacity:0}}
+@keyframes tailL{to{transform:translate(-30px,40px) rotate(70deg);opacity:0}}
+@keyframes tailR{to{transform:translate(30px,40px) rotate(-70deg);opacity:0}}
+@keyframes knotDrop{to{transform:translateY(90px) scale(.6);opacity:0}}
+@keyframes rvOff{to{transform:translateY(105%)}}
+@keyframes rhOff{to{transform:scaleX(0);opacity:0}}
+@keyframes wrapL{to{transform:translateX(-102%) rotate(-4deg)}}
+@keyframes wrapR{to{transform:translateX(102%) rotate(4deg)}}
+@keyframes gwHide{to{visibility:hidden}}
+#gStep3.got .gmani svg{animation:hop .9s cubic-bezier(.3,1.6,.5,1) 1.7s both,kid 1.6s ease-in-out 2.6s infinite alternate}
+@media (prefers-reduced-motion:reduce){.gwrap{display:none}#gStep3.got .gmani svg{animation:none}}
 </style>
 </head>
 <body>
@@ -1213,7 +1243,7 @@ $("#fnClose").onclick=()=>{$("#finale").hidden=true;IDS.forEach(id=>{const g=$("
 function openDoor(){closeAll();$("#door").classList.add("open");boxId=meId;$("#bPin").value="";resetStage();renderDoor();setMsg("#doorMsg","");openSheet("#doorSheet");}
 function renderDoor(){
  const n=IDS.filter(id=>P(id).ready).length,drawn=!!(draw&&draw.targets);
- $("#dState").textContent=drawn?"뽑기 완료! 각자 상자를 열어보세요.":(n===6?"6명 열쇠 준비 완료. 아무나 한 번 뽑으면 돼요.":"열쇠 만든 사람 "+n+"/6. 6명 다 만들면 뽑을 수 있어요.");
+ $("#dState").textContent=drawn?"뽑기 완료! 각자 상자를 열어보세요.":(n===6?"6명 다 들어왔어요. 곧 자동으로 뽑혀요.":"지금 "+n+"/6명 입장. 6명 다 들어오면 내 마니또가 자동으로 뽑혀요.");
  const r=$("#dReady");r.innerHTML="";IDS.forEach(id=>{const s=document.createElement("span");s.textContent=id;if(P(id).ready)s.className="on";r.appendChild(s);});
  $("#dDraw").disabled=!(n===6&&!drawn&&canWrite&&db);$("#dDraw").hidden=drawn;
  $("#dReset").hidden=!(drawn||Object.keys(reveals).length);if($("#dReset").hidden)$("#dResetPw").hidden=true;
@@ -1285,10 +1315,10 @@ async function gResult(id){
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
   $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML=fig(to)+"<b>"+to+"</b>";
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
-  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
+  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";const ow=$("#gRes .gwrap");if(ow)ow.remove();$("#gRes").insertAdjacentHTML("beforeend",'<div class="gwrap" aria-hidden="true"><i class="pl"></i><i class="pr"></i><i class="rv"></i><i class="rh"></i><i class="lp lp1"></i><i class="lp lp2"></i><i class="tail t1"></i><i class="tail t2"></i><i class="knot"></i></div>');gStep(3);return;}}catch(e){}}
  $("#gMani").innerHTML="";$("#gStep3").className="wait";
  if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
- else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명이 다 들어오면 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
+ else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
  gStep(3);}
 $("#gQuiet").onclick=()=>{music();gClose();};
 $("#gBack").onclick=()=>{gWho();gStep(1);};
