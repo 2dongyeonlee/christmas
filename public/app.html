@@ -366,6 +366,26 @@ input::placeholder{color:#A9A59C}
 /* person pickers: 3 + 3 (v32) */
 #kIds,#bIds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px}
 #kIds .opt,#bIds .opt{width:100%}
+
+/* draw-complete moment (v33) */
+.drawnBanner{margin:10px auto 0;max-width:340px;padding:10px 14px;border-radius:16px;background:#FFF6E2;border:1px solid #EAD9B0;text-align:center;animation:bnin .7s cubic-bezier(.3,1.5,.5,1) both}
+.drawnBanner b{display:block;font-weight:400;font-size:19px;color:var(--red)}
+.drawnBanner span{display:block;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--muted);letter-spacing:-.3px}
+@keyframes bnin{from{transform:translateY(-8px) scale(.96);opacity:0}}
+#house .drawfx{display:none}
+#house.drawn .drawfx{display:inline}
+.gpglow{transform-box:fill-box;transform-origin:center;animation:gpg 2.4s ease-in-out infinite;will-change:opacity,transform}
+@keyframes gpg{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.95;transform:scale(1.08)}}
+.gres{position:relative;max-width:320px;margin:14px auto 0;padding:26px 18px 18px;background:#FFFFFF;border-radius:22px;box-shadow:0 10px 30px rgba(60,40,20,.12);overflow:hidden}
+.gres::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:14px;margin-left:-7px;background:#D24A3E;opacity:.12}
+.gres .gbow{position:absolute;left:50%;top:-2px;width:46px;height:22px;margin-left:-23px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 22'%3E%3Cpath d='M23 11 L4 2 L4 20 Z M23 11 L42 2 L42 20 Z' fill='%23D24A3E' stroke='%23222' stroke-width='1.6' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='11' r='5' fill='%23E2B04A' stroke='%23222' stroke-width='1.4'/%3E%3C/svg%3E")}
+.gres .gq{margin-top:4px}
+#gStep3.wait .gres{background:rgba(255,255,255,.7);box-shadow:none}
+#gStep3.wait .gbow,#gStep3.wait .gres::before{display:none}
+#gStep3.got .gres{animation:gcard .8s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes gcard{from{transform:rotateX(70deg) translateY(20px);opacity:0}}
+#dResetPw{max-width:180px;display:inline-block;margin-right:6px}
+@media (prefers-reduced-motion:reduce){.gpglow,.drawnBanner,#gStep3.got .gres{animation:none}}
 </style>
 </head>
 <body>
@@ -388,10 +408,12 @@ input::placeholder{color:#A9A59C}
 <button class="gquiet" type="button" id="gBack">다른 사람이에요</button>
 </div>
 <div id="gStep3" hidden>
+<div class="gres" id="gRes"><i class="gbow" aria-hidden="true"></i>
 <p class="gq" id="gQ3"></p>
 <div class="gmani" id="gMani"></div>
 <p class="gmhint" id="gManiHint"></p>
 <p class="hint" id="gManiNote"></p>
+</div>
 <button class="btn" type="button" id="gIn">마을로 들어가기</button>
 </div>
 </div></div>
@@ -406,6 +428,7 @@ input::placeholder{color:#A9A59C}
 <div class="title">
 <p class="eyebrow">Merry &amp; Thanks · ’91–’95</p>
 <h1>우리, 2026년도 잘 버텼다</h1>
+<p class="drawnBanner" id="drawnBanner" hidden><b>6명 모두 입장! 마니또가 정해졌어요</b><span>트리 아래 선물 상자에서 내 마니또를 확인해요</span></p>
 <svg class="divider" viewBox="0 0 120 22" aria-hidden="true"><path d="M4 12 q14 -10 28 0 t28 0 t28 0 t28 0" fill="none" stroke="#4F7A4A" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="12" r="4" fill="#D24A3E" stroke="#222" stroke-width="1.6"/><circle cx="60" cy="12" r="4" fill="#E2B04A" stroke="#222" stroke-width="1.6"/><circle cx="88" cy="12" r="4" fill="#D24A3E" stroke="#222" stroke-width="1.6"/></svg>
 </div>
 
@@ -485,7 +508,7 @@ input::placeholder{color:#A9A59C}
 <div class="ready" id="dReady" aria-label="열쇠 등록 현황"></div>
 <div class="acts">
 <button class="btn red" type="button" id="dDraw" disabled>뽑기</button>
-<button class="btn quiet" type="button" id="dReset" hidden>다시 뽑기 (초기화)</button>
+<input type="password" id="dResetPw" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="초기화 비밀번호" hidden aria-label="초기화 비밀번호"><button class="btn quiet" type="button" id="dReset" hidden>다시 뽑기 (초기화)</button>
 </div>
 <div id="dBoxArea" hidden>
 <span class="lab" id="lB">나는</span>
@@ -881,13 +904,14 @@ function buildHouse(){
  
  const PLACE={JH:[158,470,.56,0],JE:[254,466,.56,0],DY:[350,466,.56,0],EJ:[446,470,.56,0],WI:[34,700,1.02,0],KB:[568,700,1.02,0]};
  const ROOF={step:112,paris:104,timber:122,bell:114,nordic:108,london:64};
- let BADGES='';
+ let BADGES='',BOWS='';
  const draw=id=>{const H=HOUSES.find(h=>h.id===id),[px,py,sc,rot]=PLACE[id];TF[id]={x:px,y:py,s:sc,rot};
   const SL=id==="KB",SK=sc<.8?1.55:1;
   const H2=Object.assign({},H,{x:-H.w/2,base:0,signLeft:SL,signK:SK});
   let g='<g class="win hit" id="w'+id+'" role="button" tabindex="0" aria-label="'+id+'의 집">';
   g+='<g transform="translate('+px+' '+py+') rotate('+rot+') scale('+sc+')">'+house(H2)+'</g>';
   const sx=SL?(-H.w/2+22):(H.w/2-24),[bx,by]=tp(id,sx+(SL?-24:24)*SK,-74*SK+4);
+  {const [wx,wy]=tp(id,sx,-74*SK+2*SK);BOWS+='<g transform="translate('+wx.toFixed(1)+' '+wy.toFixed(1)+') scale('+(SK*sc).toFixed(2)+')"><path d="M0 0 L-13 -8 L-13 8 Z M0 0 L13 -8 L13 8 Z" fill="#D24A3E" stroke="#222" stroke-width="1.6" stroke-linejoin="round"/><circle r="4" fill="#E2B04A" stroke="#222" stroke-width="1.4"/></g>';}
   BADGES+='<g class="badge" id="b'+id+'" style="display:none"><circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="12" fill="#D24A3E" '+K+'/><text class="bn" x="'+bx.toFixed(1)+'" y="'+(by+5.5).toFixed(1)+'" text-anchor="middle" font-family="Gamja Flower, sans-serif" font-size="16" fill="#fff">0</text></g>';
   return g+'</g>';};
  s+='<g filter="url(#wob)">';
@@ -934,6 +958,7 @@ function buildHouse(){
  s+='<g class="kid1">'+kid(428,724,"#E2B04A",1)+'</g><g class="kid2">'+kid(456,730,"#7FA8CC",-1)+'</g><g class="dog">'+dog(404,738)+'</g>';
  s+='<g class="sbx"><g class="sby"><circle cx="436" cy="708" r="4" fill="#fff" stroke="#222" stroke-width="1.4"/></g></g>';
  s+='</g>';
+ s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="300" cy="736" r="78" fill="url(#glowG)"/>'+BOWS+'</g>';
  s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  s+=smokeLayer();
  s+='<rect x="0" y="0" width="600" height="900" filter="url(#paper)" pointer-events="none" style="mix-blend-mode:multiply" opacity=".55"/>';
@@ -993,7 +1018,8 @@ function flyEnvelope(id){
 /* ---------- state render ---------- */
 function P(id){const d=people[id]||{};return {hint:typeof d.hint==="string"?d.hint.slice(0,40):"",ready:!!(d.pub&&d.wrap&&d.pub.n&&d.wrap.data),raw:d};}
 function noteCount(id){return notes.filter(n=>n.to===id).length;}
-function render(){
+function drawSync(){const d=!!(draw&&draw.targets);const h=$("#house");if(h)h.classList.toggle("drawn",d);const bn=$("#drawnBanner");if(bn)bn.hidden=!d;}
+function render(){try{drawSync();}catch(e){}
  let n=0;
  IDS.forEach(id=>{const p=P(id);if(p.ready)n++;
   const g=$("#w"+id);g.classList.toggle("lit",p.ready);
@@ -1190,7 +1216,7 @@ function renderDoor(){
  $("#dState").textContent=drawn?"뽑기 완료! 각자 상자를 열어보세요.":(n===6?"6명 열쇠 준비 완료. 아무나 한 번 뽑으면 돼요.":"열쇠 만든 사람 "+n+"/6. 6명 다 만들면 뽑을 수 있어요.");
  const r=$("#dReady");r.innerHTML="";IDS.forEach(id=>{const s=document.createElement("span");s.textContent=id;if(P(id).ready)s.className="on";r.appendChild(s);});
  $("#dDraw").disabled=!(n===6&&!drawn&&canWrite&&db);$("#dDraw").hidden=drawn;
- $("#dReset").hidden=!(isOwner&&(drawn||Object.keys(reveals).length));
+ $("#dReset").hidden=!(drawn||Object.keys(reveals).length);if($("#dReset").hidden)$("#dResetPw").hidden=true;
  $("#dBoxArea").hidden=!drawn;
  if(drawn)idButtons($("#bIds"),boxId,id=>{boxId=id;resetStage();renderDoor();});
  const rv=$("#reveals");rv.innerHTML="";IDS.forEach(id=>{const v=reveals[id];if(v&&IDS.includes(v.to)){const li=document.createElement("li");li.textContent=id+" → "+v.to;rv.appendChild(li);}});
@@ -1206,11 +1232,16 @@ $("#dDraw").onclick=async()=>{
  catch(e){if(e&&e.message==="notready")setMsg("#doorMsg","아직 열쇠 없는 사람이 있어요.");else err(e,"#doorMsg");}
  finally{busy=false;renderDoor();}
 };
-$("#dReset").onclick=async()=>{const b=$("#dReset");
- if(b.dataset.c!=="1"){b.dataset.c="1";b.textContent="결과가 지워져요. 한 번 더";return;}
- b.dataset.c="";b.textContent="다시 뽑기 (초기화)";if(!db||busy)return;busy=true;
- try{await db.doc("draw/current").delete();for(const id of IDS){if(reveals[id])await db.doc("reveals/"+id).delete();}setMsg("#doorMsg","초기화했어요.",true);}
- catch(e){err(e,"#doorMsg");}finally{busy=false;renderDoor();}};
+$("#dReset").onclick=async()=>{const b=$("#dReset"),pw=$("#dResetPw");
+ if(pw.hidden){pw.hidden=false;pw.value="";b.textContent="비밀번호 넣고 다시 누르기";setMsg("#doorMsg","초기화하면 지금 결과가 지워지고 새로 뽑혀요.");try{pw.focus();}catch(e){}return;}
+ const code=pw.value.trim();if(!code){setMsg("#doorMsg","초기화 비밀번호를 넣어주세요.");return;}
+ if(!db||busy)return;busy=true;window.__resetPw=code;
+ try{await db.doc("draw/current").delete();for(const id of IDS){if(reveals[id])await db.doc("reveals/"+id).delete();}
+  pw.hidden=true;b.textContent="다시 뽑기 (초기화)";draw=null;reveals={};
+  if(db.refresh)await db.refresh();
+  const ok=await autoDraw();setMsg("#doorMsg",ok?"다시 뽑았어요. 각자 상자를 다시 열어보세요.":"초기화했어요. 6명이 다 모이면 새로 뽑혀요.",true);}
+ catch(e){if(e&&e.code==="admin")setMsg("#doorMsg","비밀번호가 달라요.");else err(e,"#doorMsg");}
+ finally{window.__resetPw="";busy=false;renderDoor();}};
 function resetStage(){const s=$("#stage");if(!s)return;s.classList.remove("opened","shake");$("#pop").innerHTML="";$("#result").hidden=true;$("#bReveal").hidden=true;$("#bOpen").hidden=false;opened=null;}
 $("#bOpen").onclick=async()=>{
  if(!boxId){setMsg("#doorMsg","먼저 나를 골라주세요.");return;}
@@ -1254,8 +1285,8 @@ async function gResult(id){
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
   $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML=fig(to)+"<b>"+to+"</b>";
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
-  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";gStep(3);return;}}catch(e){}}
- $("#gMani").innerHTML="";
+  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
+ $("#gMani").innerHTML="";$("#gStep3").className="wait";
  if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
  else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명이 다 들어오면 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
  gStep(3);}
@@ -1293,7 +1324,7 @@ render();
  try{const q=new URLSearchParams(location.search);adminKey=q.get("admin")||localStorage.getItem("ch-admin")||"";groupCode=q.get("code")||localStorage.getItem("ch-code")||"";
   if(adminKey)localStorage.setItem("ch-admin",adminKey);if(groupCode)localStorage.setItem("ch-code",groupCode);
   if(q.has("admin")||q.has("code"))history.replaceState(null,"",location.pathname);}catch(e){}
- const H=()=>{const h={"content-type":"application/json"};if(adminKey)h["x-admin"]=adminKey;if(groupCode)h["x-group"]=groupCode;return h;};
+ const H=()=>{const h={"content-type":"application/json"};if(adminKey)h["x-admin"]=adminKey;if(window.__resetPw)h["x-reset"]=window.__resetPw;if(groupCode)h["x-group"]=groupCode;return h;};
  async function call(method,path,body){
   const r=await fetch("/api/"+path,{method,headers:H(),body:body?JSON.stringify(body):undefined,cache:"no-store"});
   const j=await r.json().catch(()=>({}));

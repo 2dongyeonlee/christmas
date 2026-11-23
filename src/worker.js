@@ -34,6 +34,10 @@ function isAdmin(req, env) {
   const k = req.headers.get("x-admin") || "";
   return !!env.ADMIN_KEY && k.length > 0 && k === env.ADMIN_KEY;
 }
+function resetOk(req, env) {
+  const code = env.RESET_CODE || "1234";
+  return (req.headers.get("x-reset") || "") === code;
+}
 function groupOk(req, env) {
   if (!env.GROUP_CODE) return true;
   return (req.headers.get("x-group") || "") === env.GROUP_CODE;
@@ -99,7 +103,7 @@ async function api(req, env, u) {
   // draw/current: single draw (atomic create), admin reset
   if (col === "draw" && id === "current") {
     if (m === "DELETE") {
-      if (!admin) return json({ error: "admin" }, 403);
+      if (!admin && !resetOk(req, env)) return json({ error: "admin" }, 403);
       await del(env, "draw/current");
       return json({ ok: true });
     }
@@ -115,7 +119,7 @@ async function api(req, env, u) {
   if (col === "reveals" && IDS.includes(id)) {
     const k = "reveals/" + id;
     if (m === "DELETE") {
-      if (!admin) return json({ error: "admin" }, 403);
+      if (!admin && !resetOk(req, env)) return json({ error: "admin" }, 403);
       await del(env, k);
       return json({ ok: true });
     }
