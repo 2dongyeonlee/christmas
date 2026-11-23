@@ -476,6 +476,30 @@ input::placeholder{color:#A9A59C}
 @keyframes tailL{to{transform:translate(-30px,40px) rotate(70deg);opacity:0;visibility:hidden}}
 @keyframes tailR{to{transform:translate(30px,40px) rotate(-70deg);opacity:0;visibility:hidden}}
 @keyframes knotDrop{to{transform:translateY(90px) scale(.6);opacity:0;visibility:hidden}}
+
+/* gift box pop reveal (v37) */
+#gStep3.got .gmani svg{animation:none}
+.gstage{position:relative;width:170px;height:190px;margin:2px auto 0}
+.gstage .gbx{position:absolute;left:10px;bottom:0;width:150px;height:120px;z-index:2;transform-origin:50% 100%;animation:gshk .28s ease-in-out .25s 4 alternate}
+.gstage .glid{position:absolute;left:0;bottom:104px;width:170px;height:60px;z-index:3;transform-origin:50% 100%;animation:gshk .28s ease-in-out .25s 4 alternate,glidOff .7s cubic-bezier(.3,1.2,.5,1) 1.4s forwards}
+.gstage .gpop{position:absolute;left:25px;bottom:60px;width:120px;z-index:1;transform:translateY(70px) scale(.6);opacity:0;animation:gpopUp .8s cubic-bezier(.3,1.7,.5,1) 1.55s forwards}
+.gstage .gpop svg{width:120px;height:auto;display:block}
+@keyframes gshk{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+@keyframes glidOff{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(-95px,-70px) rotate(-38deg);opacity:0}}
+@keyframes gpopUp{to{transform:translateY(-58px) scale(1);opacity:1}}
+#gStep3.got .gmani b,#gStep3.got .gmhint,#gStep3.got #gManiNote{opacity:0;animation:gfade .5s ease-out 2.15s forwards}
+@keyframes gfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gmani b{margin-top:-46px;position:relative;z-index:4}
+@media (prefers-reduced-motion:reduce){.gstage .gbx,.gstage .glid,.gstage .gpop,#gStep3.got .gmani b,#gStep3.got .gmhint,#gStep3.got #gManiNote{animation:none;opacity:1}.gstage .glid{display:none}.gstage .gpop{transform:translateY(-58px)}}
+
+/* gift box reveal fixes (v37b) */
+#gStep3.got .gstage{height:236px;margin-top:-4px}
+#gStep3.got .gstage .gbx{animation:gshk .28s ease-in-out .25s 4 alternate}
+#gStep3.got .gstage .glid{animation:gshk .28s ease-in-out .25s 4 alternate,glidOff .7s cubic-bezier(.3,1.2,.5,1) 1.4s forwards}
+#gStep3.got .gstage .gpop{bottom:58px;animation:gpopUp2 .8s cubic-bezier(.3,1.7,.5,1) 1.55s forwards}
+@keyframes gpopUp2{to{transform:translateY(-40px) scale(1);opacity:1}}
+#gStep3.got .gmani b{margin-top:8px}
+@media (prefers-reduced-motion:reduce){#gStep3.got .gstage .gbx,#gStep3.got .gstage .glid,#gStep3.got .gstage .gpop{animation:none;opacity:1}#gStep3.got .gstage .glid{display:none}#gStep3.got .gstage .gpop{transform:translateY(-40px)}}
 </style>
 </head>
 <body>
@@ -1373,9 +1397,9 @@ async function gResult(id){
  const ok=await autoDraw(),n=IDS.filter(x=>P(x).ready).length;
  const ct=ok&&draw.targets[id];
  if(typeof ct==="string"&&privCache[id]){try{const to=await decWith(privCache[id],ct);if(IDS.includes(to)){
-  $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML=fig(to)+"<b>"+to+"</b>";
+  $("#gQ3").textContent="내 마니또는";$("#gMani").innerHTML='<div class="gstage"><div class="gpop">'+fig(to)+'</div><svg class="gbx" viewBox="0 0 150 120" aria-hidden="true"><rect x="3" y="3" width="144" height="114" rx="6" fill="#D9493E" stroke="#222" stroke-width="3.2"/><rect x="65" y="3" width="20" height="114" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><path d="M20 30 l8 8 M120 88 l8 8 M28 92 l-6 6 M118 26 l6 -6" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg><svg class="glid" viewBox="0 0 170 60" aria-hidden="true"><path d="M85 28 C70 4 46 4 48 18 C50 30 72 30 85 28 Z M85 28 C100 4 124 4 122 18 C120 30 98 30 85 28 Z" fill="#E2B04A" stroke="#222" stroke-width="3" stroke-linejoin="round"/><rect x="3" y="26" width="164" height="30" rx="6" fill="#E85B4F" stroke="#222" stroke-width="3.2"/><rect x="75" y="26" width="20" height="30" fill="#E2B04A" stroke="#222" stroke-width="3.2"/><circle cx="85" cy="27" r="6" fill="#E2B04A" stroke="#222" stroke-width="3"/></svg></div><b>'+to+'</b>';
   const h=P(to).hint;$("#gManiHint").textContent=h?"힌트: "+h:"힌트 없음. 몰래 알아내기!";
-  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";const ow=$("#gRes .gwrap");if(ow)ow.remove();$("#gRes").insertAdjacentHTML("beforeend",'<div class="gwrap" aria-hidden="true"><i class="pl"></i><i class="pr"></i><i class="rv"></i><i class="rh"></i><svg class="pbow" viewBox="0 0 120 92" aria-hidden="true"><defs><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter></defs><g filter="url(#rough)"><g class="bt1"><path d="M57 38 C52 55 44 70 33 86 L41 82 L45 90 C53 72 59 56 62 41 Z" fill="#BE3A40"/><path d="M57 42 C53 56 47 68 40 80" fill="none" stroke="#D9575C" stroke-width="1.6" opacity=".7"/></g><g class="bt2"><path d="M63 38 C68 55 76 70 87 86 L79 82 L75 90 C67 72 61 56 58 41 Z" fill="#BE3A40"/><path d="M63 42 C67 56 73 68 80 80" fill="none" stroke="#D9575C" stroke-width="1.6" opacity=".7"/></g><g class="bl"><path d="M60 35 C44 10 12 6 10 26 C8 44 38 46 60 35 Z" fill="#BE3A40"/><path d="M58 34 C44 22 22 18 18 27" fill="none" stroke="#8E2A30" stroke-width="2.2" stroke-linecap="round" opacity=".55"/><path d="M50 20 C40 13 26 12 20 18" fill="none" stroke="#D9575C" stroke-width="2" stroke-linecap="round" opacity=".8"/></g><g class="br"><path d="M60 35 C76 10 108 6 110 26 C112 44 82 46 60 35 Z" fill="#BE3A40"/><path d="M62 34 C76 22 98 18 102 27" fill="none" stroke="#8E2A30" stroke-width="2.2" stroke-linecap="round" opacity=".55"/><path d="M70 20 C80 13 94 12 100 18" fill="none" stroke="#D9575C" stroke-width="2" stroke-linecap="round" opacity=".8"/></g><g class="bk"><ellipse cx="60" cy="36" rx="9" ry="10" fill="#A8323A"/><path d="M55 31 C58 34 62 34 65 31" fill="none" stroke="#D9575C" stroke-width="1.6" stroke-linecap="round"/></g></g></svg></div>');gStep(3);return;}}catch(e){}}
+  $("#gManiNote").textContent="12/3까지 비밀! 다른 사람한테 화면 안 보이게.";$("#gStep3").className="got";gStep(3);return;}}catch(e){}}
  $("#gMani").innerHTML="";$("#gStep3").className="wait";
  if(ok){$("#gQ3").textContent="마니또를 열지 못했어요";$("#gManiHint").textContent="";$("#gManiNote").textContent="열쇠를 새로 만들었다면 동연에게 다시 뽑기를 부탁해주세요.";}
  else{$("#gQ3").textContent="지금 "+n+"/6명 입장";$("#gManiHint").textContent="6명 다 들어오면 내 마니또가 자동으로 뽑혀요.";$("#gManiNote").textContent="다음에 들어올 때 여기서 바로 보여드려요.";}
