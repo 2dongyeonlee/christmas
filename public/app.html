@@ -1032,39 +1032,38 @@ const PAINTED=!/style=svg/.test(location.search);
 function buildPainted(){
  const S=600/1024,R=v=>+(v*S).toFixed(1);SMK=[];for(const k in TF)delete TF[k];
  // door boxes in source-image px (1024x1536): x0,y0,x1,y1 ; house hit boxes
- const DOOR={JH:[118,580,178,695],JE:[378,540,428,632],DY:[600,545,655,638],EJ:[852,600,908,712],WI:[98,1145,178,1310],KB:[868,1210,944,1390]};
- const HIT={JH:[0,320,240,700],JE:[262,300,492,635],DY:[540,300,760,640],EJ:[790,340,1024,715],WI:[0,790,260,1320],KB:[790,820,1024,1400]};
- const CHIM={JH:[155,318],JE:[415,308],DY:[648,308],EJ:[940,345],WI:[40,800],KB:[978,830]};
+ const DOOR={JH:[127,636,174,735],JE:[395,594,436,688],DY:[664,631,708,727],EJ:[854,656,888,756],WI:[147,1118,206,1300],KB:[785,1143,836,1310]};
+ const HIT={JH:[45,70,240,745],JE:[245,295,470,690],DY:[520,65,850,730],EJ:[825,430,1024,765],WI:[0,770,350,1310],KB:[635,820,1000,1320]};
+ const CHIM={JH:[75,82],JE:[414,300],DY:[602,78],EJ:[975,440],WI:[42,782],KB:[940,832]};
  let s='<defs><radialGradient id="moonG"><stop offset=".3" stop-color="#FFF3C4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient><radialGradient id="glowG"><stop offset="0" stop-color="#FFE29A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient></defs>';
  s+='<image href="/art/village.jpg" x="0" y="0" width="600" height="900" preserveAspectRatio="xMidYMid slice"/>';
  // sky sparkles: moon + painted stars
  const spk=(x,y,r,d)=>'<path class="spk4" d="M'+x+' '+(y-r)+' Q'+x+' '+y+' '+(x+r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y+r)+' Q'+x+' '+y+' '+(x-r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y-r)+' Z" fill="#FFF6D6" style="animation-delay:-'+d+'s"/>';
- s+='<g class="skyfx" pointer-events="none"><circle class="moonhalo" cx="'+R(858)+'" cy="'+R(100)+'" r="44" fill="url(#moonG)"/>';
- [[155,90,9,0],[408,180,7,1.1],[688,127,8,.5],[918,203,7,1.7],[260,40,5,2.2],[560,60,5,.9],[760,240,5,1.4],[60,230,5,2.6],[980,60,5,.3]].forEach(([x,y,r,d])=>{s+=spk(R(x),R(y),r,d);});
+ s+='<g class="skyfx" pointer-events="none">';
+ [[300,90,8,0],[470,200,7,1.1],[890,150,8,.5],[960,300,6,1.7],[260,250,5,2.2],[420,60,5,.9],[880,40,5,1.4],[30,60,5,2.6]].forEach(([x,y,r,d])=>{s+=spk(R(x),R(y),r,d);});
  s+='</g>';
  // sleigh with falling gifts (loops every 18s)
  const SL='M-240 150 Q300 30 840 120',dur=18;
  s+='<g pointer-events="none"><g><animateMotion path="'+SL+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.55;1" calcMode="linear"/><image href="/art/sleigh.webp" x="-80" y="-40" width="160" height="79"/></g>';
  const bez=(t)=>{const a=[-240,150],b=[300,30],c=[840,120];return [(1-t)*(1-t)*a[0]+2*(1-t)*t*b[0]+t*t*c[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*b[1]+t*t*c[1]];};
- [[.36,0,560],[.5,1,600],[.64,3,575]].forEach(([f,gi,gy])=>{const [x,y]=bez(f),t0=f*.55,t1=t0+.13,tF=t1+.08;
+ [[.36,0,700],[.5,1,720],[.64,3,705]].forEach(([f,gi,gy])=>{const [x,y]=bez(f),t0=f*.55,t1=t0+.13,tF=t1+.08;
   s+='<g opacity="0"><animate attributeName="opacity" dur="'+dur+'s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;'+t0.toFixed(3)+';'+(t0+.005).toFixed(3)+';'+t1.toFixed(3)+';'+tF.toFixed(3)+';1"/>'+
    '<animateMotion path="M'+(x-20).toFixed(0)+' '+(y+10).toFixed(0)+' Q'+(x+10).toFixed(0)+' '+(y+60).toFixed(0)+' '+(x+5).toFixed(0)+' '+gy+'" dur="'+dur+'s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" calcMode="linear"/>'+
    '<g><animateTransform attributeName="transform" type="rotate" values="-20;-20;25;25" keyTimes="0;'+t0.toFixed(3)+';'+t1.toFixed(3)+';1" dur="'+dur+'s" repeatCount="indefinite"/><image href="/art/gift'+gi+'.webp" x="-11" y="-12" width="22" height="25"/></g></g>';});
  s+='</g>';
  // string lights across the square + tree lights
  const bc=["#FFE29A","#F2A9B8","#FFF3C4","#E2B04A"];s+='<g pointer-events="none">';
- [[0,196,600,206,28],[0,250,600,262,22]].forEach(([x1,y1,x2,y2,sag],li)=>{s+='<path d="M'+x1+' '+y1+' Q300 '+(y1+sag*2)+' '+x2+' '+y2+'" fill="none" stroke="#3A3028" stroke-width="1" opacity=".55"/>';
-  for(let k=1;k<18;k++){const t=k/18,xx=x1+(x2-x1)*t,yy=(1-t)*(1-t)*y1+2*(1-t)*t*(y1+sag*2)+t*t*y2;s+='<circle class="lb" cx="'+xx.toFixed(1)+'" cy="'+(yy+3).toFixed(1)+'" r="2.6" fill="'+bc[(k+li)%4]+'"/>';}});
- for(let i=0;i<34;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=310+v*290,hw=12+(y-300)*.5*.98,x=300+(u*2-1)*hw*.82;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.2" fill="'+bc[i%4]+'"/>';}
- s+='<circle class="lb" cx="'+R(515)+'" cy="'+R(503)+'" r="5" fill="#FFE29A"/>';
+
+ for(let i=0;i<34;i++){const v=((i*0.61803)%1),u=((i*0.3819+.13)%1),y=338+v*272,hw=6+(y-330)*.29,x=301+(u*2-1)*hw*.8;s+='<circle class="lb" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.2" fill="'+bc[i%4]+'"/>';}
+ s+='<circle class="lb" cx="'+R(521)+'" cy="'+R(548)+'" r="5" fill="#FFE29A"/>';
  s+='</g>';
  // car on the road
- s+='<g pointer-events="none" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.04;.6;.68;1"/><animateMotion path="M150 935 C205 840 300 775 470 692" dur="14s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.68;1" calcMode="linear"/><g><animateTransform attributeName="transform" type="scale" values="1;.55;.55" keyTimes="0;.68;1" dur="14s" repeatCount="indefinite"/><image href="/art/car.webp" x="-44" y="-62" width="88" height="65"/></g></g>';
+ s+='<g pointer-events="none" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.04;.6;.68;1"/><animateMotion path="M-70 884 L680 872" dur="14s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.68;1" calcMode="linear"/><image href="/art/car.webp" x="-36" y="-50" width="72" height="53"/></g>';
  // houses: clickable area, opening door w/ character, house sign, badge
  let BADGES='',BOWS='';
  ["JH","JE","DY","EJ","WI","KB"].forEach(id=>{
   const [a,b,c,d]=DOOR[id].map(R),dw=+(c-a).toFixed(1),dh=+(d-b).toFixed(1),[h0,h1,h2,h3]=HIT[id].map(R),front=id==="WI"||id==="KB";
-  const dp=doorD("arch",a,b,dw,dh);
+  const dp=doorD("rect",a,b,dw,dh);
   let g='<g class="win hit" id="w'+id+'" role="button" tabindex="0" aria-label="'+id+'의 집">';
   g+='<rect x="'+h0+'" y="'+h1+'" width="'+(h2-h0).toFixed(1)+'" height="'+(h3-h1).toFixed(1)+'" fill="transparent"/>';
   g+='<clipPath id="dc'+id+'"><path d="'+dp+'"/></clipPath>';
@@ -1084,9 +1083,9 @@ function buildPainted(){
   const [cx0,cy0]=CHIM[id];SMK.push([id,R(cx0),R(cy0)-6]);
  });
  // gift pile under the tree (opens the manitto box)
- s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="222" y="596" width="156" height="54" fill="transparent"/>'+
-  '<image href="/art/gift2.webp" x="230" y="606" width="34" height="38"/><image href="/art/gift0.webp" x="281" y="600" width="42" height="49"/><image href="/art/gift3.webp" x="332" y="608" width="32" height="35"/><image href="/art/gift1.webp" x="262" y="622" width="26" height="29"/></g>';
- s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="300" cy="628" r="70" fill="url(#glowG)"/>'+BOWS+'</g>';
+ s+='<g class="gifts" id="treeGift" role="button" tabindex="0" aria-label="트리 아래 마니또 선물 상자"><rect x="236" y="598" width="140" height="56" fill="transparent"/>'+
+  '<image href="/art/gift2.webp" x="246" y="612" width="30" height="34"/><image href="/art/gift0.webp" x="284" y="604" width="38" height="44"/><image href="/art/gift3.webp" x="328" y="614" width="28" height="31"/><image href="/art/gift1.webp" x="270" y="628" width="22" height="25"/></g>';
+ s+='<g class="drawfx" pointer-events="none"><circle class="gpglow" cx="302" cy="626" r="70" fill="url(#glowG)"/>'+BOWS+'</g>';
  s+='<g class="badges" pointer-events="none">'+BADGES+'</g>';
  s+=smokeLayer();
  $("#house").innerHTML=s;$("#house").classList.add("painted");
