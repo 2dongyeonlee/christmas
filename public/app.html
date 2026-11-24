@@ -1668,7 +1668,12 @@ const Jazz=(()=>{
   if(playing)return;
   ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
   if(ctx.state==="suspended")ctx.resume();
-  const comp=ctx.createDynamicsCompressor();master=ctx.createGain();master.gain.value=0.0001;master.connect(comp);comp.connect(ctx.destination);
+  try{if(navigator.audioSession)navigator.audioSession.type="playback";}catch(e){}
+  const comp=ctx.createDynamicsCompressor();master=ctx.createGain();master.gain.value=0.0001;master.connect(comp);
+  // iPhone silent switch mutes Web Audio; route through a media <audio> element so it still plays
+  const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(isIOS&&!navigator.audioSession&&ctx.createMediaStreamDestination){try{const md=ctx.createMediaStreamDestination();comp.connect(md);if(!window.__jzEl){window.__jzEl=new Audio();window.__jzEl.setAttribute("playsinline","");}window.__jzEl.srcObject=md.stream;window.__jzEl.play().catch(()=>{});}catch(e){comp.connect(ctx.destination);}}
+  else comp.connect(ctx.destination);
   master.gain.exponentialRampToValueAtTime(.5,ctx.currentTime+1.2);
   nextT=ctx.currentTime+.1;beat=0;pi=0;rep=0;playing=true;timer=setInterval(tick,50);tick();
  }
